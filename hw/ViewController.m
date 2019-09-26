@@ -20,7 +20,10 @@
     // Do any additional setup after loading the view.
     
     Homework1 *task = [Homework1 new];
+    NSLog(@"---First Task---");
     [task processNumArray];
+    NSLog(@"---Second Task---");
+    [task processStrArray];
 }
 
 

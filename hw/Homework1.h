@@ -13,19 +13,19 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Homework1 : NSObject
 {
     NSMutableArray *numbers;
+    NSArray *strings;
 }
 
--(void)printNumArray;
-
 -(void)processNumArray;
--(void)myQuickSortWithLeft:(int)l
-                  andRight:(int)r;
+-(void)processStrArray;
+
+-(void)myQuickSortWithLeft:(int)l andRight:(int)r;
 -(void)builtInSort:(BOOL)asc;
 -(void)filterGreater20;
 -(void)filterMulOf3;
 
--(void)processStrArray;
-
+-(void)printArray:(id)arr;
+-(void)printDictionary:(NSMutableDictionary *)dict;
 @end
 
 NS_ASSUME_NONNULL_END
