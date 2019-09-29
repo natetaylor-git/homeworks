@@ -30,9 +30,9 @@
         if ([[self.cookbook allKeys] containsObject:menuItem])
         {
             [self startCooking:menuItem];
+            [self finishedCooking:menuItem];
         }
     }
-    [self finishedCooking:order];
 }
 
 -(void)startCooking:(NSString *)dish
@@ -45,8 +45,8 @@
     [self.delegate knowAbout:[dish stringByAppendingString:@" is ready!"]];
 }
 
--(void)finishedCooking:(NSArray *)packOfDishes
+-(void)finishedCooking:(NSString *)dish
 {
-    [self.delegate deliverToGuest:packOfDishes];
+    [self.delegate deliverToGuest:dish];
 }
 @end

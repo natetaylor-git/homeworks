@@ -14,6 +14,8 @@
 
 @property (nonatomic, strong) Kitchen *kitchen;
 @property (nonatomic, strong) Guest *guest;
+@property NSString *nameForPrint;
+@property NSInteger tips;
 
 @end
 
@@ -31,6 +33,7 @@
         self.nameForPrint = @"Waiter";
         self.kitchen = [Kitchen new];
         self.kitchen.delegate = self;
+        self.tips = 0;
     }
     return self;
 }
@@ -64,15 +67,27 @@
     NSLog(@"==================");
 }
 
--(void)deliverToGuest:(NSArray *)packOfDishes
+-(void)deliverToGuest:(NSString *)dish
 {
     NSLog(@"sending");
-    [self.guest receiveDishes:packOfDishes];
+    [self.guest getDish:dish];
 }
 
 -(void)knowAbout:(NSString *)something
 {
-    NSLog(@"[Waiter] I know that %@", something);
+    NSLog(@"[%@] I know that %@", self.nameForPrint, something);
+}
+
+-(void)getTip:(NSInteger)someMoney
+{
+    self.tips += someMoney;
+    NSLog(@"[%@] No, u are breathtaking! Waiting for u again!", self.nameForPrint);
+    [self showMoney];
+}
+
+-(void)showMoney
+{
+    NSLog(@"[%@] So... I have %ld rub now", self.nameForPrint, self.tips);
 }
 
 @end

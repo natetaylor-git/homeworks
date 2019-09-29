@@ -10,6 +10,14 @@
 #import "Waiter.h"
 #import "stdlib.h"
 
+@interface Guest ()
+
+@property NSInteger money;
+@property NSInteger numOfDishesCheck;
+@property BOOL mood;
+
+@end
+
 @implementation Guest
 
 - (instancetype)init
@@ -17,11 +25,29 @@
     self = [super init];
     if (self) {
         self.name = @"Alexey";
+        NSInteger luckChance = 10;
+        if (arc4random_uniform((uint32_t)luckChance))
+        {
+            self.mood = YES;
+        }
+        [self addObserver:self forKeyPath:@"numOfDishesCheck" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     }
     return self;
 }
 
--(void)cameToRestaurant:(Waiter *) waiter
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+    
+    if ([keyPath isEqualToString:@"numOfDishesCheck"]) {
+        NSInteger newValue = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
+        if (newValue == 0)
+        {
+            NSLog(@"[%@] I ate all food", self.name);
+            [self payTip];
+        }
+    }
+}
+
+-(void)visitRestaurant:(Waiter *) waiter
 {
     self.delegate = waiter;
     [self.delegate serveGuest:self];
@@ -36,6 +62,7 @@
 -(void)readyToOrder:(NSMutableArray *) order
 {
     [self printOrder:order];
+    self.numOfDishesCheck = order.count;
     [self.delegate sendOrderToKitchen:order];
 }
 
@@ -44,24 +71,13 @@
     uint32_t menuLength = (uint32_t)[menu allKeys].count;
     uint32_t numItemsInOrder = 1+arc4random_uniform(menuLength);
     
-//    NSLog(@"jjj %d %d", numItemsInOrder, menuLength);
-    
     NSMutableArray *order = [NSMutableArray arrayWithArray:[menu allKeys]];
-    
-//    NSLog(@"start %ld", order.count);
+
     for (NSInteger i=0; i<menuLength-numItemsInOrder; i++)
     {
         NSInteger indxItemToRemove = arc4random_uniform((uint32_t)order.count);
         [order removeObjectAtIndex:indxItemToRemove];
-//        NSLog(@"%ld %ld", order.count, (long)indxItemToRemove);
     }
-  
-//    for(NSNumber * obj in order)
-//    {
-//        NSLog(@"%@", obj);
-//    }
-//
-//    NSLog(@"OK");
     
     return order;
 }
@@ -75,11 +91,24 @@
     }
 }
 
--(void)receiveDishes:(NSArray *)packOfDishes
+-(void)getDish:(NSString *)dish
 {
-    for(NSString* dish in packOfDishes)
+    NSLog(@"[%@] %@ is so yummy!", self.name, dish);
+    self.numOfDishesCheck --;
+}
+
+-(void)payTip
+{
+    if (self.mood)
     {
-        NSLog(@"%@ is so yummy!", dish);
+        NSLog(@"[%@] U are breathtaking! Take a tip, please.", self.name);
+        uint32_t tipValue = 11+arc4random_uniform(90);
+        [self.delegate getTip:(NSInteger)tipValue];
+    }
+    else
+    {
+        NSLog(@"[%@] It's not my day..", self.name);
     }
 }
+
 @end

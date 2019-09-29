@@ -13,7 +13,6 @@
 @interface Waiter : NSObject <WaiterProtocol>
 
 @property NSDictionary *menu;
-@property NSString *nameForPrint;
 
 @end
 

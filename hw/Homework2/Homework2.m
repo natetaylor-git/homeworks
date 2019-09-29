@@ -17,7 +17,7 @@
     Waiter *waiter1 = [Waiter new];
     Guest *guest1 = [Guest new];
     
-    [guest1 cameToRestaurant:waiter1];
+    [guest1 visitRestaurant:waiter1];
 }
 
 @end

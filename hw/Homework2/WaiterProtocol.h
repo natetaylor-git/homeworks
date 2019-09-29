@@ -11,7 +11,8 @@
 -(void)serveGuest:(id) newGuest;
 -(NSDictionary *)giveMenu;
 -(void)sendOrderToKitchen: (NSMutableArray *)order;
--(void)deliverToGuest:(NSArray *)packOfDishes;
+-(void)deliverToGuest:(NSString*)dish;
+-(void)getTip:(NSInteger)someMoney;
 
 @optional
 -(void)knowAbout:(NSString *)something;

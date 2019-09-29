@@ -14,10 +14,10 @@
 @property (nonatomic, weak) id <WaiterProtocol> delegate;
 @property NSString *name;
 
--(void)cameToRestaurant: (id) waiter;
+-(void)visitRestaurant: (id) waiter;
 -(NSMutableArray *)createOrder : (NSDictionary *) menu;
 -(void)readyToOrder:(NSMutableArray *) order;
--(void)receiveDishes:(NSArray *)packOfDishes;
+-(void)getDish:(NSString *)dish;
 
 @end
 
