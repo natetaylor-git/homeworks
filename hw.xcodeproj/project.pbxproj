@@ -14,6 +14,10 @@
 		433ABDAC233D2C7F006626C3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 433ABDAA233D2C7F006626C3 /* LaunchScreen.storyboard */; };
 		433ABDAF233D2C7F006626C3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 433ABDAE233D2C7F006626C3 /* main.m */; };
 		433ABDBA233D2CF3006626C3 /* Homework1.m in Sources */ = {isa = PBXBuildFile; fileRef = 433ABDB9233D2CF3006626C3 /* Homework1.m */; };
+		43C9A48423400EEA0095555E /* Homework2.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C9A48323400EEA0095555E /* Homework2.m */; };
+		43C9A488234010B90095555E /* Guest.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C9A487234010B90095555E /* Guest.m */; };
+		43C9A48B234010E60095555E /* Waiter.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C9A48A234010E60095555E /* Waiter.m */; };
+		43C9A48E234010F90095555E /* Kitchen.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C9A48D234010F90095555E /* Kitchen.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +33,15 @@
 		433ABDAE233D2C7F006626C3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		433ABDB8233D2CF3006626C3 /* Homework1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Homework1.h; sourceTree = "<group>"; };
 		433ABDB9233D2CF3006626C3 /* Homework1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Homework1.m; sourceTree = "<group>"; };
+		43C9A48223400EEA0095555E /* Homework2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Homework2.h; sourceTree = "<group>"; };
+		43C9A48323400EEA0095555E /* Homework2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Homework2.m; sourceTree = "<group>"; };
+		43C9A486234010B90095555E /* Guest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Guest.h; sourceTree = "<group>"; };
+		43C9A487234010B90095555E /* Guest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Guest.m; sourceTree = "<group>"; };
+		43C9A489234010E60095555E /* Waiter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Waiter.h; sourceTree = "<group>"; };
+		43C9A48A234010E60095555E /* Waiter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Waiter.m; sourceTree = "<group>"; };
+		43C9A48C234010F90095555E /* Kitchen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kitchen.h; sourceTree = "<group>"; };
+		43C9A48D234010F90095555E /* Kitchen.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Kitchen.m; sourceTree = "<group>"; };
+		43C9A48F234014520095555E /* WaiterProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WaiterProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,8 +85,25 @@
 				433ABDAE233D2C7F006626C3 /* main.m */,
 				433ABDB8233D2CF3006626C3 /* Homework1.h */,
 				433ABDB9233D2CF3006626C3 /* Homework1.m */,
+				43C9A485234010740095555E /* Homework2 */,
 			);
 			path = hw;
+			sourceTree = "<group>";
+		};
+		43C9A485234010740095555E /* Homework2 */ = {
+			isa = PBXGroup;
+			children = (
+				43C9A48F234014520095555E /* WaiterProtocol.h */,
+				43C9A486234010B90095555E /* Guest.h */,
+				43C9A487234010B90095555E /* Guest.m */,
+				43C9A489234010E60095555E /* Waiter.h */,
+				43C9A48A234010E60095555E /* Waiter.m */,
+				43C9A48C234010F90095555E /* Kitchen.h */,
+				43C9A48D234010F90095555E /* Kitchen.m */,
+				43C9A48223400EEA0095555E /* Homework2.h */,
+				43C9A48323400EEA0095555E /* Homework2.m */,
+			);
+			path = Homework2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,8 +176,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43C9A488234010B90095555E /* Guest.m in Sources */,
+				43C9A48423400EEA0095555E /* Homework2.m in Sources */,
+				43C9A48E234010F90095555E /* Kitchen.m in Sources */,
 				433ABDA4233D2C7D006626C3 /* ViewController.m in Sources */,
 				433ABDAF233D2C7F006626C3 /* main.m in Sources */,
+				43C9A48B234010E60095555E /* Waiter.m in Sources */,
 				433ABDA1233D2C7D006626C3 /* AppDelegate.m in Sources */,
 				433ABDBA233D2CF3006626C3 /* Homework1.m in Sources */,
 			);

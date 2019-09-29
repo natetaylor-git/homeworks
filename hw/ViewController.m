@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "Homework1.h"
+#import "Homework2/Homework2.h"
 
 @interface ViewController ()
 
@@ -19,11 +20,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    Homework1 *task = [Homework1 new];
-    NSLog(@"---First Task---");
-    [task processNumArray];
-    NSLog(@"---Second Task---");
-    [task processStrArray];
+//    Homework1 *taskHW1 = [Homework1 new];
+//    NSLog(@"---First Task---");
+//    [taskHW1 processNumArray];
+//    NSLog(@"---Second Task---");
+//    [taskHW1 processStrArray];
+    
+    Homework2 *taskHW2 = [Homework2 new];
+    [taskHW2 doTask];
 }
 
 
