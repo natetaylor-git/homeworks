@@ -14,6 +14,8 @@
 
 @property (nonatomic, strong) Kitchen *kitchen;
 @property (nonatomic, strong) Guest *guest;
+
+@property NSDictionary *menu;
 @property NSString *nameForPrint;
 @property NSInteger tips;
 

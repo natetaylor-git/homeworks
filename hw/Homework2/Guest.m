@@ -16,6 +16,9 @@
 @property NSInteger numOfDishesCheck;
 @property BOOL mood;
 
+-(NSMutableArray *)createOrder : (NSDictionary *) menu;
+-(void)readyToOrder:(NSMutableArray *) order;
+
 @end
 
 @implementation Guest
@@ -30,7 +33,7 @@
         {
             self.mood = YES;
         }
-        [self addObserver:self forKeyPath:@"numOfDishesCheck" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+        [self addObserver:self forKeyPath:@"numOfDishesCheck" options:NSKeyValueObservingOptionNew context:nil];
     }
     return self;
 }
@@ -47,9 +50,9 @@
     }
 }
 
--(void)visitRestaurant:(Waiter *) waiter
+-(void)visitRestaurant:(Waiter *) waiterAsDelegate
 {
-    self.delegate = waiter;
+    self.delegate = waiterAsDelegate;
     [self.delegate serveGuest:self];
 
     NSLog(@"[%@] Hi there! Boss is inda restaurant!", self.name);
@@ -107,7 +110,7 @@
     }
     else
     {
-        NSLog(@"[%@] It's not my day..", self.name);
+        NSLog(@"[%@] It's not my day.. maybe I will thank him next time", self.name);
     }
 }
 

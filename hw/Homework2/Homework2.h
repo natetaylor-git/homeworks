@@ -12,6 +12,9 @@
 
 @interface Homework2 : NSObject
 
+/**
+ initial method to start homework task
+ */
 -(void)doTask;
 
 @end
