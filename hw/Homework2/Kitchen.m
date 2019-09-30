@@ -8,6 +8,15 @@
 
 #import "Kitchen.h"
 
+@interface Kitchen ()
+
+@property NSDictionary *cookbook;
+
+-(void)startCooking: (NSString *)dish;
+-(void)finishedCooking:(NSString *)dish;
+
+@end
+
 @implementation Kitchen
 
 - (instancetype)init

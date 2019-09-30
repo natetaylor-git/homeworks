@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "WaiterProtocol.h"
 
-
+/**
+ Waiter class that does all operations about taking and sending order/dishes
+ */
 @interface Waiter : NSObject <WaiterProtocol>
-
-@property NSDictionary *menu;
 
 @end
 
