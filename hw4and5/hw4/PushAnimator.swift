@@ -25,18 +25,20 @@ class PushAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         containerView.insertSubview(toViewController!.view, belowSubview: fromViewController!.view)
         
         toViewController?.view.alpha = 0.0
-        UIView.animate(withDuration: 2.0, animations: {
-            fromViewController?.view.transform = CGAffineTransform(scaleX: 5.0, y: 5.0)
-            fromViewController?.view.alpha = 0.0
-        }) { (completed) in
-            UIView.animate(withDuration: 1.0, animations: {
+        
+        UIView.animateKeyframes(withDuration: 3, delay: 0, options: [], animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.6, animations: {
+                fromViewController?.view.transform = CGAffineTransform(scaleX: 5.0, y: 5.0)
+                fromViewController?.view.alpha = 0.0
+            })
+            UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.4, animations: {
                 toViewController?.view.alpha = 1.0
-                fromViewController?.view.transform = CGAffineTransform.identity
-            }) { finished in
-                let cancelled = transitionContext.transitionWasCancelled
-                transitionContext.completeTransition(!cancelled)
-            }
-        }
+            })
+        }, completion: { finished in
+            fromViewController?.view.transform = CGAffineTransform.identity
+            let cancelled = transitionContext.transitionWasCancelled
+            transitionContext.completeTransition(!cancelled)
+        })
         
     }
     

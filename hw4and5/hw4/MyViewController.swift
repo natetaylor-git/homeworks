@@ -29,8 +29,8 @@ class MyViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         view.backgroundColor = UIColor.white
-        setButton()
-        setButton2()
+        setStayButton()
+        setLeaveButton()
         view.addSubview(stayButton)
         view.addSubview(leaveButton)
         
@@ -81,7 +81,7 @@ class MyViewController: UIViewController {
         }
     }
     
-    func setButton() {
+    func setStayButton() {
         stayButton.setTitle("Остаться навсегда", for: .normal)
         stayButton.backgroundColor = UIColor.white
         stayButton.setTitleColor(UIColor.black, for: .normal)
@@ -92,7 +92,7 @@ class MyViewController: UIViewController {
                                   height: self.view.center.y)
     }
     
-    func setButton2() {
+    func setLeaveButton() {
         leaveButton.setTitle("Уйти", for: .normal)
         leaveButton.backgroundColor = UIColor.black
         leaveButton.setTitleColor(UIColor.white, for: .normal)
