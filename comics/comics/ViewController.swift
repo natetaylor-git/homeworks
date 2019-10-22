@@ -14,7 +14,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     var imageView = UIImageView()
     var pagesRects : Array<CGRect> = []
     var count = -1
-//    let button = UIButton()
+    let endButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,33 +37,18 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        let viewFrame = self.view.frame
-        
-        let imageWidth = viewFrame.width
-        let imageHeight = viewFrame.height
-        imageView.frame = CGRect(x: 0, y: 0, width: imageWidth, height: imageHeight)
-        imageView.image = UIImage(named: "comics")
-        
-        scrollView = UIScrollView.init(frame: imageView.frame)
-        scrollView.delegate = self
-        scrollView.contentSize = CGSize(width: imageWidth, height: imageHeight)
-        imageView.contentMode = .scaleToFill
-        scrollView.backgroundColor = UIColor.green
-        scrollView.isScrollEnabled = false
-        
-//        button.frame = CGRect(x: 40, y: viewFrame.height-40, width: 100, height: 40)
-//        button.backgroundColor = UIColor.red
-//        button.addTarget(self, action: #selector(tapped), for: .touchDown)
+        setScrollView()
+        setEndButton()
         
         view.addSubview(scrollView)
         scrollView.addSubview(imageView)
-//        view.addSubview(button)
+        view.addSubview(endButton)
     }
 
-//    @objc func tapped() {
-//        scrollView.bounds = pagesRects[count]
-//        scrollView.scrollRectToVisible(pagesRects[count], animated: true)
-//    }
+    @objc func tappedEndButton() {
+        scrollView.bounds = imageView.frame
+        count = -1
+    }
     
     @objc func changePicture() {
         scrollView.bounds = pagesRects[count]
@@ -77,17 +62,43 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         if gesture.direction == .left {
             count += 1
         }
-
         if count == pagesRects.count {
             count = 0
         }
-        
         if count < 0 {
             count = pagesRects.count-1
         }
         
         changePicture()
     }
+    
+    func setScrollView() {
+        let viewFrame = self.view.frame
+        
+        let imageWidth = viewFrame.width
+        let imageHeight = viewFrame.height
+        imageView.frame = CGRect(x: 0, y: 0, width: imageWidth, height: imageHeight)
+        imageView.image = UIImage(named: "comics")
+        
+        scrollView = UIScrollView.init(frame: imageView.frame)
+        scrollView.delegate = self
+        scrollView.contentSize = CGSize(width: imageWidth, height: imageHeight)
+        imageView.contentMode = .scaleToFill
+        scrollView.backgroundColor = UIColor.green
+        scrollView.isScrollEnabled = false
+    }
 
+    func setEndButton() {
+        let endButtonHeight = CGFloat(40)
+        self.endButton.frame = CGRect(x: view.center.x/2,
+                                      y: self.view.frame.height-endButtonHeight-10,
+                                      width: view.center.x,
+                                      height: endButtonHeight)
+        self.endButton.backgroundColor = UIColor.white
+        self.endButton.addTarget(self, action: #selector(tappedEndButton), for: .touchDown)
+        self.endButton.setTitle("End watching", for: .normal)
+        self.endButton.setTitleColor(UIColor.black, for: .normal)
+    }
+    
 }
 
