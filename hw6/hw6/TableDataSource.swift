@@ -26,6 +26,8 @@ class DataSource: NSObject, UITableViewDataSource {
         if indexPath.section == 0 {
             cell.detailTextLabel?.text = cellInfo.subText
             cell.detailTextLabel?.textColor = .gray
+            cell.detailTextLabel?.lineBreakMode = .byWordWrapping
+            cell.detailTextLabel?.numberOfLines = 0
             cell.textLabel?.textColor = UIColor.init(red: 0, green: 122/255, blue: 1.0, alpha: 1.0)
         } else {
             cell.accessoryType = .disclosureIndicator
@@ -33,7 +35,6 @@ class DataSource: NSObject, UITableViewDataSource {
         
         cell.imageView?.image = UIImage(named: "\(cellInfo.imageName)")
         cell.textLabel?.text = cellInfo.text
-        
         cell.textLabel?.lineBreakMode = .byWordWrapping
         cell.textLabel?.numberOfLines = 0
         

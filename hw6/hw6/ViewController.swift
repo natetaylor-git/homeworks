@@ -48,39 +48,39 @@ class ViewController: UIViewController, UITableViewDelegate, UINavigationControl
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var minHeight: CGFloat = 43
-        
+        let labelWidth: CGFloat = 250
+
         let cellInfo = self.tableDataSource.data[indexPath.section][indexPath.row]
         let padding : CGFloat = 5
-        
+
         let textLabel = UILabel()
-        textLabel.frame = .zero
         textLabel.font = UIFont.systemFont(ofSize: 16)
         textLabel.lineBreakMode = .byWordWrapping
         textLabel.numberOfLines = 0
-        textLabel.text = self.tableDataSource.data[indexPath.section][indexPath.row].text
-        textLabel.sizeToFit()
-        
-        
+        textLabel.text = cellInfo.text
+        let textLabelSize = textLabel.sizeThatFits(CGSize(width: labelWidth,
+                                                          height: CGFloat.greatestFiniteMagnitude))
+
         var subTextLabelHeight: CGFloat = 0
         if indexPath.section == 0 {
-            minHeight = 83
             let subTextLabel = UILabel()
-            subTextLabel.frame = .zero
             subTextLabel.font = UIFont.systemFont(ofSize: 12)
+            subTextLabel.lineBreakMode = .byWordWrapping
             subTextLabel.numberOfLines = 0
             subTextLabel.text = cellInfo.subText
-            subTextLabel.sizeToFit()
-            subTextLabelHeight = padding + subTextLabel.frame.height
+            subTextLabelHeight = subTextLabel.sizeThatFits(CGSize(width: labelWidth,
+                                                                height: CGFloat.greatestFiniteMagnitude)).height + padding
         }
-        
+
         let imageSide = CGFloat(32)
         let imgView = UIImageView()
         imgView.image = UIImage(named: "\(cellInfo.imageName)")
         imgView.frame.size = CGSize(width: imageSide, height: imageSide)
         
-        return max(minHeight, max(imgView.frame.height + padding * 2,
-                                  textLabel.frame.height+subTextLabelHeight + padding * 2))
+        print("t", textLabelSize.height)
+        
+        return max(imgView.frame.height + padding * 2,
+                   textLabelSize.height + subTextLabelHeight + padding * 2)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

@@ -14,6 +14,7 @@ class TableViewCell: UITableViewCell {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         self.textLabel?.font = UIFont.systemFont(ofSize: 16)
         self.detailTextLabel?.font = UIFont.systemFont(ofSize: 12)
+        self.frame = .zero
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -23,6 +24,7 @@ class TableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.detailTextLabel?.text = nil
+        self.textLabel?.text = nil
         self.textLabel?.textColor = .black
         self.accessoryType = .none
     }
@@ -30,28 +32,46 @@ class TableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         let padding: CGFloat = 5
-        
+        let imageSize = CGSize(width: CGFloat(32), height: CGFloat(32))
+        let textLabelWidth: CGFloat = 250
+
         if let imageView = self.imageView {
-            imageView.frame = CGRect(x: imageView.frame.origin.x,
-                                          y: imageView.frame.origin.y + padding,
-                                          width: imageView.frame.width - padding * 2,
-                                          height: imageView.frame.height - padding * 2)
-        }
-        if let textLabel = self.textLabel {
-            textLabel.frame = CGRect(x: textLabel.frame.origin.x - padding * 2,
-                                           y: textLabel.frame.origin.y,
-                                           width: textLabel.frame.width + padding * 2,
-                                           height: textLabel.frame.height)
+            imageView.frame = CGRect(x: padding,
+                                      y: self.frame.size.height/2 - imageSize.height/2,
+                                      width: imageSize.width,
+                                      height: imageSize.height)
         }
         
-        if let detailTextLabel = self.detailTextLabel {
-            detailTextLabel.frame = CGRect(x: detailTextLabel.frame.origin.x - padding * 2,
-                                           y: detailTextLabel.frame.origin.y + padding,
-                                           width: detailTextLabel.frame.width + padding * 2,
-                                           height: detailTextLabel.frame.height)
+        if let textLabel = self.textLabel {
+
+            var yOrigin = padding
+            let xOrigin = imageView!.frame.origin.x + imageView!.frame.width + padding
+            let sizeTextLabel = textLabel.sizeThatFits(CGSize(width: textLabelWidth,
+                                                              height: CGFloat.greatestFiniteMagnitude))
+            
+            yOrigin = self.frame.size.height/2 - sizeTextLabel.height/2
+            
+            if let detailTextLabel = self.detailTextLabel {
+
+                let sizeDetailTextLabel = detailTextLabel.sizeThatFits(CGSize(width: textLabelWidth,
+                                                                              height: CGFloat.greatestFiniteMagnitude))
+                
+                yOrigin = (self.frame.size.height - sizeTextLabel.height - sizeDetailTextLabel.height - padding)/2
+                let yOriginDetail = yOrigin + sizeTextLabel.height + padding
+                let xOriginDetail = xOrigin
+                
+                detailTextLabel.frame = CGRect(x: xOriginDetail,
+                                               y: yOriginDetail,
+                                               width: sizeDetailTextLabel.width,
+                                               height: sizeDetailTextLabel.height)
+            }
+            
+            textLabel.frame = CGRect(x: xOrigin,
+            y: yOrigin,
+            width: sizeTextLabel.width,
+            height: sizeTextLabel.height)
         }
     }
-    
 }
 
 //class TableViewCell: UITableViewCell {
