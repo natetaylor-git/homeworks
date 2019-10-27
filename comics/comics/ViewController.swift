@@ -49,14 +49,14 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLoad() {
         self.comicsImageView.image = resizedImage()
-        scrollView.delegate = self
-        scrollView.isScrollEnabled = false
+        self.scrollView.delegate = self
+        self.scrollView.isScrollEnabled = false
         
         setScrollView()
         self.comicsImageView.frame = CGRect(origin: .zero, size: scrollView.contentSize)
         
-        self.scrollView.addSubview(self.comicsImageView)
-        self.view.addSubview(self.scrollView)
+        self.scrollView.addSubview(comicsImageView)
+        self.view.addSubview(scrollView)
         
         self.view.addSubview(backgroundView)
         
@@ -69,8 +69,8 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         self.rightSwipe.addTarget(self, action: #selector(handleGesture))
         self.leftSwipe.addTarget(self, action: #selector(handleGesture))
         
-        self.view.addGestureRecognizer(self.rightSwipe)
-        self.view.addGestureRecognizer(self.leftSwipe)
+        self.view.addGestureRecognizer(rightSwipe)
+        self.view.addGestureRecognizer(leftSwipe)
     }
     
     func setScrollView() {
