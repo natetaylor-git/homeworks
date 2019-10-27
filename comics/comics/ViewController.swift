@@ -8,6 +8,8 @@
 
 import UIKit
 
+let imageName = "comics"
+
 class ViewController: UIViewController, UIScrollViewDelegate {
 
     var count = -1
@@ -28,7 +30,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     
     let backgroundView: UIImageView = {
         let imageView = UIImageView(frame: UIScreen.main.bounds)
-        imageView.image = UIImage(named: "comics")
+        imageView.image = UIImage(named: imageName)
         return imageView
     }()
     
@@ -121,7 +123,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         self.startButton.isEnabled = false
         self.backgroundView.alpha = 0.0
  
-// if u comment next two lines (126 and 127) and uncomment comments marked as 1 and 2
+// if u comment next two lines (128 and 129) and uncomment comments marked as 1 and 2
 // then u can see scroll view without page fitting
         self.count = 0
         self.changePage()
@@ -185,7 +187,6 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         
         let targetFrame = CGRect(origin: .zero, size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - padding))
         
-        let imageName = "comics"
         if let image = UIImage(named: imageName) {
             let scaleX = targetFrame.size.width / maxWidth
             let scaleY = targetFrame.size.height / maxHeight
