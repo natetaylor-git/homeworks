@@ -23,7 +23,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     var cardsCollectionView: UICollectionView = {
         let layout = CustomCollectionViewLayout()
         let collectionView = UICollectionView.init(frame: .zero, collectionViewLayout:layout)
-        collectionView.backgroundColor = UIColor.init(red: 229/255, green: 229/255, blue: 234/255, alpha: 1.0)
+        collectionView.backgroundColor = .groupTableViewBackground//UIColor.init(red: 229/255, green: 229/255, blue: 234/255, alpha: 1.0)
         return collectionView
     }()
     
@@ -34,12 +34,15 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         let frame = CGRect(origin: CGPoint(x: 0, y: cardsCollectionPaddingY),
                            size: CGSize(width: screenBoundsSize.width,
                                         height: screenBoundsSize.height - cardsCollectionPaddingY))
+        
+        self.cardsCollectionView.contentInsetAdjustmentBehavior = .never
         self.cardsCollectionView.frame = frame
         //self.cardsCollectionView.layer.contents = UIImage(named: "BackgroundPicture")?.cgImage
         self.cardsCollectionView.dataSource = self
         self.cardsCollectionView.delegate = self
         self.cardsCollectionView.isDirectionalLockEnabled = true
         self.cardsCollectionView.register(CardViewCell.self, forCellWithReuseIdentifier: "cellId")
+        self.cardsCollectionView.register(HeaderCell.self, forCellWithReuseIdentifier: "headerId")
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -51,6 +54,13 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if indexPath.row == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerId", for: indexPath) as! HeaderCell
+            cell.isUserInteractionEnabled = false
+            cell.label.text = data[indexPath.section][0]
+            return cell
+        }
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! CardViewCell
         

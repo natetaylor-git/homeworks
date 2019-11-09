@@ -13,12 +13,14 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
     let cellWidth: CGFloat = 200.0
     let paddingY: CGFloat = 20.0
     let paddingX: CGFloat = 40.0
-    let topPadding: CGFloat = 50.0
+    let topPadding: CGFloat = 10.0
     let leftPadding: CGFloat = 20.0
     let rightPadding: CGFloat = 20.0
     
     var cellAttributesDictionary = Dictionary<IndexPath, UICollectionViewLayoutAttributes>()
     var contentSize = CGSize.zero
+    
+    var update = true
     
     override var collectionViewContentSize: CGSize {
         return self.contentSize
@@ -29,6 +31,23 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
             return
         }
         
+        if !update {
+            let yOffset = collectionView.contentOffset.y
+            
+            for section in 0..<collectionView.numberOfSections {
+                let cellIndex = IndexPath(item: 0, section: section)
+                
+                if let attributes = cellAttributesDictionary[cellIndex] {
+                    var frame = attributes.frame
+                    frame.origin.y = yOffset + topPadding + cellHeight / 4
+                    attributes.frame = frame
+                }
+            }
+            return
+        }
+        
+        update = false
+        
         var maxNumberOfItemsInSection = 0
         for section in 0..<collectionView.numberOfSections {
             let numberOfItems = collectionView.numberOfItems(inSection: section)
@@ -38,20 +57,29 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
             
             for item in 0..<numberOfItems {
                 let cellIndex = IndexPath(item: item, section: section)
-                let xPos = CGFloat(section) * (cellWidth + paddingX) + leftPadding
-                let yPos = CGFloat(item) * (cellHeight + paddingY) + topPadding
-                
+                var xPos: CGFloat
+                var yPos: CGFloat
                 let cellAttributes = UICollectionViewLayoutAttributes(forCellWith: cellIndex)
-                cellAttributes.frame = CGRect(origin: CGPoint(x: xPos, y: yPos),
-                                             size: CGSize(width: cellWidth, height: cellHeight))
-                cellAttributes.zIndex = 1 //???
+                if item == 0 {
+                    xPos = CGFloat(section) * (cellWidth + paddingX) + leftPadding
+                    yPos = cellHeight / 4 + topPadding
+                    cellAttributes.frame = CGRect(origin: CGPoint(x: xPos, y: yPos),
+                                                  size: CGSize(width: cellWidth, height: cellHeight/2))
+                     cellAttributes.zIndex = 2
+                } else {
+                    xPos = CGFloat(section) * (cellWidth + paddingX) + leftPadding
+                    yPos = CGFloat(item) * (cellHeight + paddingY) + topPadding
+                    cellAttributes.frame = CGRect(origin: CGPoint(x: xPos, y: yPos),
+                                                  size: CGSize(width: cellWidth, height: cellHeight))
+                     cellAttributes.zIndex = 1
+                }
                 
                 self.cellAttributesDictionary[cellIndex] = cellAttributes
             }
         }
         
         let contentWidth = leftPadding + CGFloat(collectionView.numberOfSections) * (cellWidth + paddingX) - paddingX + rightPadding
-        let contentHeight = CGFloat(maxNumberOfItemsInSection) * (cellHeight + paddingY)
+        let contentHeight = topPadding + CGFloat(maxNumberOfItemsInSection) * (cellHeight + paddingY)
         self.contentSize = CGSize(width: contentWidth, height: contentHeight)
     }
     
@@ -70,5 +98,9 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
         }
         
         return visibleLayoutAttributes
+    }
+    
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        return true
     }
 }
