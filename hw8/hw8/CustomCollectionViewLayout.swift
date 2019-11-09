@@ -62,7 +62,7 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
                 let cellAttributes = UICollectionViewLayoutAttributes(forCellWith: cellIndex)
                 if item == 0 {
                     xPos = CGFloat(section) * (cellWidth + paddingX) + leftPadding
-                    yPos = topPadding//cellHeight / 4 + topPadding
+                    yPos = topPadding //cellHeight / 4 + topPadding
                     cellAttributes.frame = CGRect(origin: CGPoint(x: xPos, y: yPos),
                                                   size: CGSize(width: cellWidth, height: cellHeight * 3/4))
                      cellAttributes.zIndex = 2

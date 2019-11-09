@@ -10,18 +10,24 @@ import UIKit
 
 class ViewController: UIViewController, CardsCollectionDelegate {
     
-    let cardsCollection = CardsCollection()
+    var cardsCollection: CardsCollection!
     var cardsCollectionView: UICollectionView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if (self.responds(to: #selector(getter: UIViewController.edgesForExtendedLayout)))
-        {
-            self.edgesForExtendedLayout = UIRectEdge()
+        
+//        if (self.responds(to: #selector(getter: UIViewController.edgesForExtendedLayout)))
+//        {
+//            self.edgesForExtendedLayout = UIRectEdge()
+//        }
+        
+        var yPaddingCollectioView: CGFloat = 0
+        if let navigationBar = self.navigationController?.navigationBar {
+            yPaddingCollectioView = navigationBar.frame.height + navigationBar.frame.origin.y
         }
         
-        
+        self.cardsCollection = CardsCollection(offset: yPaddingCollectioView)
         self.title = "Task Board"
         self.view.backgroundColor = .white
         self.cardsCollection.delegate = self

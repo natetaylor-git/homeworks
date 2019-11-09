@@ -16,7 +16,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     
     var data = Data().allInfo
     var delegate: CardsCollectionDelegate?
-    let cardsCollectionPaddingY: CGFloat = 0//60
+    var cardsCollectionPaddingY: CGFloat = 0 //100
     var changedCell: CardViewCell?
     var oldCellFrame: CGRect = .zero
     
@@ -27,9 +27,10 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         return collectionView
     }()
     
-    override init() {
+    init(offset yPadding: CGFloat) {
         super.init()
         
+        self.cardsCollectionPaddingY = yPadding
         let screenBoundsSize = UIScreen.main.bounds.size
         let frame = CGRect(origin: CGPoint(x: 0, y: cardsCollectionPaddingY),
                            size: CGSize(width: screenBoundsSize.width,
@@ -129,6 +130,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
                 cell.frame = self.oldCellFrame
                 cell.layoutSubviews()
             }) { (finished) in
+                self.cardsCollectionView.reloadData()
                 cell.textView.setContentOffset(.zero, animated: false)
                 self.cardsCollectionView.isScrollEnabled = true
                 self.cardsCollectionView.allowsSelection = true
@@ -146,7 +148,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     
     @objc func addNewCell(sender: UIButton) {
         let section = sender.tag
-
+        
         // this method groups operations with collectionview
         self.cardsCollectionView.performBatchUpdates({
             let indexPath = IndexPath(item: 1, section: section)
@@ -155,6 +157,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
             let layout = self.cardsCollectionView.collectionViewLayout as! CustomCollectionViewLayout
             layout.update = true
             self.cardsCollectionView.insertItems(at: [indexPath])
+            self.cardsCollectionView.reloadData()
         }, completion: nil)
     }
     
