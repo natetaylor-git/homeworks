@@ -111,7 +111,6 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
             cell.layoutSubviews()
         }) { finished in
             cell.textView.isUserInteractionEnabled = true
-            //cell.textView.becomeFirstResponder()
             self.createDoneButton(on: cell)
         }
     }
@@ -130,7 +129,9 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
                 cell.frame = self.oldCellFrame
                 cell.layoutSubviews()
             }) { (finished) in
-                self.cardsCollectionView.reloadData()
+                // to make zIndex = 1
+               // self.cardsCollectionView.reloadData()
+                cell.superview?.sendSubviewToBack(cell)
                 cell.textView.setContentOffset(.zero, animated: false)
                 self.cardsCollectionView.isScrollEnabled = true
                 self.cardsCollectionView.allowsSelection = true
@@ -149,16 +150,29 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     @objc func addNewCell(sender: UIButton) {
         let section = sender.tag
         
+        // добавление в конец
+        //let numberOfItems = cardsCollectionView.numberOfItems(inSection: section)
+        let indexPath = IndexPath(item: 1, section: section)
+        self.cardsCollectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
+        
         // this method groups operations with collectionview
         self.cardsCollectionView.performBatchUpdates({
-            let indexPath = IndexPath(item: 1, section: section)
             data[section].insert("new cell", at: indexPath.item)
-            
             let layout = self.cardsCollectionView.collectionViewLayout as! CustomCollectionViewLayout
             layout.update = true
             self.cardsCollectionView.insertItems(at: [indexPath])
             self.cardsCollectionView.reloadData()
-        }, completion: nil)
+        }, completion:// nil )
+        {
+            finished in
+            if let cell = self.cardsCollectionView.cellForItem(at: indexPath) as? CardViewCell {
+                self.changedCell = cell
+                self.oldCellFrame = cell.frame
+                self.presentCellFullScreen(with: cell)
+            } else {
+                print("новая ячейка не показалась на редактирование", indexPath)
+            }
+        })
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
