@@ -16,6 +16,12 @@ class ViewController: UIViewController, CardsCollectionDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if (self.responds(to: #selector(getter: UIViewController.edgesForExtendedLayout)))
+        {
+            self.edgesForExtendedLayout = UIRectEdge()
+        }
+        
+        
         self.title = "Task Board"
         self.view.backgroundColor = .white
         self.cardsCollection.delegate = self

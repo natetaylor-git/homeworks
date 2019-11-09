@@ -13,7 +13,7 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
     let cellWidth: CGFloat = 200.0
     let paddingY: CGFloat = 20.0
     let paddingX: CGFloat = 40.0
-    let topPadding: CGFloat = 10.0
+    let topPadding: CGFloat = 0.0 //10.0
     let leftPadding: CGFloat = 20.0
     let rightPadding: CGFloat = 20.0
     
@@ -39,7 +39,7 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
                 
                 if let attributes = cellAttributesDictionary[cellIndex] {
                     var frame = attributes.frame
-                    frame.origin.y = yOffset + topPadding + cellHeight / 4
+                    frame.origin.y = yOffset + topPadding //+ cellHeight / 4
                     attributes.frame = frame
                 }
             }
@@ -62,9 +62,9 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
                 let cellAttributes = UICollectionViewLayoutAttributes(forCellWith: cellIndex)
                 if item == 0 {
                     xPos = CGFloat(section) * (cellWidth + paddingX) + leftPadding
-                    yPos = cellHeight / 4 + topPadding
+                    yPos = topPadding//cellHeight / 4 + topPadding
                     cellAttributes.frame = CGRect(origin: CGPoint(x: xPos, y: yPos),
-                                                  size: CGSize(width: cellWidth, height: cellHeight/2))
+                                                  size: CGSize(width: cellWidth, height: cellHeight * 3/4))
                      cellAttributes.zIndex = 2
                 } else {
                     xPos = CGFloat(section) * (cellWidth + paddingX) + leftPadding

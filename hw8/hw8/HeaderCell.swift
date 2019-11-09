@@ -10,6 +10,16 @@ import UIKit
 
 class HeaderCell: UICollectionViewCell {
     let label = UILabel()
+    let addButton: UIButton = {
+       let button = UIButton()
+        button.frame = .zero
+        button.setTitle("+", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderWidth = 1.0
+        button.backgroundColor = .yellow
+        return button
+    }()
     
     override func prepareForReuse() {
         self.label.text = ""
@@ -17,13 +27,30 @@ class HeaderCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
+        
+        //setup()
+        
+        let cellBounds = self.bounds
+        
         self.label.textAlignment = .center
-        self.label.frame = self.bounds
+        self.label.frame = cellBounds
+        
+        self.label.frame = CGRect(origin: cellBounds.origin,
+                                  size: CGSize(width: cellBounds.width, height: cellBounds.height * 1/2))
+        
         self.label.textColor = UIColor.black
-        self.label.font = UIFont.systemFont(ofSize: 16)
+        self.label.font = UIFont.systemFont(ofSize: 20)
         self.contentView.addSubview(label)
-        self.backgroundColor = .lightGray
+        
+        let buttonSide = cellBounds.height - self.label.frame.height
+        let buttonOrigin = CGPoint(x: cellBounds.origin.x + (cellBounds.width - buttonSide) / 2,
+                                   y: cellBounds.origin.y + self.label.frame.height)
+        self.addButton.frame = CGRect(origin: buttonOrigin,
+                                        size: CGSize(width: buttonSide, height: buttonSide))
+        self.addButton.layer.cornerRadius = addButton.frame.width / 2
+        self.contentView.addSubview(self.addButton)
+        
+        self.backgroundColor = .groupTableViewBackground
     }
     
     required init?(coder aDecoder: NSCoder) {

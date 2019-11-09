@@ -16,7 +16,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     
     var data = Data().allInfo
     var delegate: CardsCollectionDelegate?
-    let cardsCollectionPaddingY: CGFloat = 60
+    let cardsCollectionPaddingY: CGFloat = 0//60
     var changedCell: CardViewCell?
     var oldCellFrame: CGRect = .zero
     
@@ -55,21 +55,26 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if indexPath.row == 0 {
+        var backgroundColor: UIColor
+        switch indexPath.section {
+        case 0: backgroundColor = .blue
+        case 1: backgroundColor = .red
+        case 3: backgroundColor = .brown
+        default: backgroundColor = UIColor(red: 34/255, green: 139/255, blue: 34/255, alpha: 1.0)
+        }
+        
+        if indexPath.item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerId", for: indexPath) as! HeaderCell
-            cell.isUserInteractionEnabled = false
+            //cell.isUserInteractionEnabled = false
             cell.label.text = data[indexPath.section][0]
+            cell.addButton.backgroundColor = backgroundColor
+            cell.addButton.tag = indexPath.section
+            cell.addButton.addTarget(self, action: #selector(addNewCell(sender:)), for: .touchUpInside)
             return cell
         }
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! CardViewCell
-        
-        switch indexPath.section {
-        case 0: cell.backgroundColor = .blue
-        case 1: cell.backgroundColor = .red
-        case 3: cell.backgroundColor = .brown
-        default: cell.backgroundColor = UIColor(red: 34/255, green: 139/255, blue: 34/255, alpha: 1.0)
-        }
+        cell.backgroundColor = backgroundColor
         
         cell.textView.text = data[indexPath.section][indexPath.row]
         
@@ -131,6 +136,28 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         }
     }
 
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        if indexPath.item == 0 {
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    @objc func addNewCell(sender: UIButton) {
+        let section = sender.tag
+
+        // this method groups operations with collectionview
+        self.cardsCollectionView.performBatchUpdates({
+            let indexPath = IndexPath(item: 1, section: section)
+            data[section].insert("new cell", at: indexPath.item)
+            
+            let layout = self.cardsCollectionView.collectionViewLayout as! CustomCollectionViewLayout
+            layout.update = true
+            self.cardsCollectionView.insertItems(at: [indexPath])
+        }, completion: nil)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
     }
