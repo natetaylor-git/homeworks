@@ -19,6 +19,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     var cardsCollectionPaddingY: CGFloat = 0 //100
     var changedCell: CardViewCell?
     var oldCellFrame: CGRect = .zero
+    var changingCellState = false
     
     var cardsCollectionView: UICollectionView = {
         let layout = CustomCollectionViewLayout()
@@ -36,7 +37,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
                            size: CGSize(width: screenBoundsSize.width,
                                         height: screenBoundsSize.height - cardsCollectionPaddingY))
         
-        self.cardsCollectionView.contentInsetAdjustmentBehavior = .never
+        self.cardsCollectionView.contentInsetAdjustmentBehavior = .never //можно убрать
         self.cardsCollectionView.frame = frame
         //self.cardsCollectionView.layer.contents = UIImage(named: "BackgroundPicture")?.cgImage
         self.cardsCollectionView.dataSource = self
@@ -66,7 +67,6 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         
         if indexPath.item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerId", for: indexPath) as! HeaderCell
-            //cell.isUserInteractionEnabled = false
             cell.label.text = data[indexPath.section][0]
             cell.addButton.backgroundColor = backgroundColor
             cell.addButton.tag = indexPath.section
@@ -84,10 +84,10 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = cardsCollectionView.cellForItem(at: indexPath) as! CardViewCell
-        //collectionView.isScrollEnabled = false
-        //collectionView.allowsSelection = false
-        //new
-        collectionView.isUserInteractionEnabled = false
+        collectionView.isScrollEnabled = false
+        collectionView.allowsSelection = false
+        self.changingCellState = true
+        //collectionView.isUserInteractionEnabled = false
         
         self.changedCell = cell
         self.oldCellFrame = cell.frame
@@ -131,14 +131,14 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
                 cell.frame = self.oldCellFrame
                 cell.layoutSubviews()
             }) { (finished) in
-                // to make zIndex = 1
-               // self.cardsCollectionView.reloadData()
+                
                 cell.superview?.sendSubviewToBack(cell)
                 cell.textView.setContentOffset(.zero, animated: false)
-                //self.cardsCollectionView.isScrollEnabled = true
-                //self.cardsCollectionView.allowsSelection = true
-                //new
-                self.cardsCollectionView.isUserInteractionEnabled = true
+                self.cardsCollectionView.isScrollEnabled = true
+                self.cardsCollectionView.allowsSelection = true
+                self.changingCellState = false
+        
+                //self.cardsCollectionView.isUserInteractionEnabled = true
             }
         }
     }
@@ -152,8 +152,18 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     }
     
     @objc func addNewCell(sender: UIButton) {
+        if self.changingCellState {
+            return
+        }
+        self.changingCellState = true
+        
         let section = sender.tag
-        self.cardsCollectionView.isUserInteractionEnabled = false
+        self.cardsCollectionView.isScrollEnabled = false
+        self.cardsCollectionView.allowsSelection = false
+
+        //self.cardsCollectionView.isUserInteractionEnabled = false
+        
+        
         // добавление в конец
         //let numberOfItems = cardsCollectionView.numberOfItems(inSection: section)
         let indexPath = IndexPath(item: 1, section: section)
