@@ -84,8 +84,10 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = cardsCollectionView.cellForItem(at: indexPath) as! CardViewCell
-        collectionView.isScrollEnabled = false
-        collectionView.allowsSelection = false
+        //collectionView.isScrollEnabled = false
+        //collectionView.allowsSelection = false
+        //new
+        collectionView.isUserInteractionEnabled = false
         
         self.changedCell = cell
         self.oldCellFrame = cell.frame
@@ -133,8 +135,10 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
                // self.cardsCollectionView.reloadData()
                 cell.superview?.sendSubviewToBack(cell)
                 cell.textView.setContentOffset(.zero, animated: false)
-                self.cardsCollectionView.isScrollEnabled = true
-                self.cardsCollectionView.allowsSelection = true
+                //self.cardsCollectionView.isScrollEnabled = true
+                //self.cardsCollectionView.allowsSelection = true
+                //new
+                self.cardsCollectionView.isUserInteractionEnabled = true
             }
         }
     }
@@ -149,7 +153,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     
     @objc func addNewCell(sender: UIButton) {
         let section = sender.tag
-        
+        self.cardsCollectionView.isUserInteractionEnabled = false
         // добавление в конец
         //let numberOfItems = cardsCollectionView.numberOfItems(inSection: section)
         let indexPath = IndexPath(item: 1, section: section)
