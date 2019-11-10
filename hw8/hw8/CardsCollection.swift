@@ -160,9 +160,10 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         self.cardsCollectionView.allowsSelection = false
         self.cardsCollectionView.dragInteractionEnabled = false
         
-        let indexPath = IndexPath(item: 1, section: section)
-        self.cardsCollectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
+        let indexPathToScroll = IndexPath(item: 0, section: section)
+        self.cardsCollectionView.scrollToItem(at: indexPathToScroll, at: .bottom, animated: false)
         
+        let indexPath = IndexPath(item: 1, section: section)
         self.cardsCollectionView.performBatchUpdates({
             data[section].insert("Type new task!", at: indexPath.item)
             self.cardsCollectionView.insertItems(at: [indexPath])
@@ -178,13 +179,12 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         })
     }
     
-    func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
-        if proposedIndexPath.item == 0 {
-            return IndexPath(item: 1, section: 0)
-        } else {
-            return proposedIndexPath
-        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        let numberOfVisibleCardCells = self.cardsCollectionView.indexPathsForVisibleItems.filter{$0.item != 0}.count
+//        if  numberOfVisibleCardCells == 0 {
+//            self.cardsCollectionView.setContentOffset(CGPoint(x: cardsCollectionView.contentOffset.x, y: 0), animated: true)
+//        }
+//    }
 }
 
 extension CardsCollection: UICollectionViewDragDelegate {
