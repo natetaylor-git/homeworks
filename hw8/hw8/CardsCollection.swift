@@ -45,6 +45,10 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         self.cardsCollectionView.isDirectionalLockEnabled = true
         self.cardsCollectionView.register(CardViewCell.self, forCellWithReuseIdentifier: "cellId")
         self.cardsCollectionView.register(HeaderCell.self, forCellWithReuseIdentifier: "headerId")
+        
+        self.cardsCollectionView.dragDelegate = self
+        self.cardsCollectionView.dropDelegate = self
+        self.cardsCollectionView.dragInteractionEnabled = true
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -56,15 +60,11 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let darkGreen = UIColor(red: 34/255, green: 139/255, blue: 34/255, alpha: 1.0)
+        let colors: [UIColor] = [.blue,.red, .brown, darkGreen, .purple, .orange, .magenta]
         
-        var backgroundColor: UIColor
-        switch indexPath.section {
-        case 0: backgroundColor = .blue
-        case 1: backgroundColor = .red
-        case 3: backgroundColor = .brown
-        default: backgroundColor = UIColor(red: 34/255, green: 139/255, blue: 34/255, alpha: 1.0)
-        }
-        
+        let backgroundColor: UIColor = colors[indexPath.section % colors.count]
+
         if indexPath.item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerId", for: indexPath) as! HeaderCell
             cell.label.text = data[indexPath.section][0]
@@ -76,7 +76,6 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! CardViewCell
         cell.backgroundColor = backgroundColor
-        
         cell.textView.text = data[indexPath.section][indexPath.row]
         
         return cell
@@ -87,7 +86,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         collectionView.isScrollEnabled = false
         collectionView.allowsSelection = false
         self.changingCellState = true
-        //collectionView.isUserInteractionEnabled = false
+        collectionView.dragInteractionEnabled = false
         
         self.changedCell = cell
         self.oldCellFrame = cell.frame
@@ -137,8 +136,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
                 self.cardsCollectionView.isScrollEnabled = true
                 self.cardsCollectionView.allowsSelection = true
                 self.changingCellState = false
-        
-                //self.cardsCollectionView.isUserInteractionEnabled = true
+                self.cardsCollectionView.dragInteractionEnabled = true
             }
         }
     }
@@ -160,24 +158,15 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         let section = sender.tag
         self.cardsCollectionView.isScrollEnabled = false
         self.cardsCollectionView.allowsSelection = false
-
-        //self.cardsCollectionView.isUserInteractionEnabled = false
+        self.cardsCollectionView.dragInteractionEnabled = false
         
-        
-        // добавление в конец
-        //let numberOfItems = cardsCollectionView.numberOfItems(inSection: section)
         let indexPath = IndexPath(item: 1, section: section)
         self.cardsCollectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
         
-        // this method groups operations with collectionview
         self.cardsCollectionView.performBatchUpdates({
-            data[section].insert("new cell", at: indexPath.item)
-            let layout = self.cardsCollectionView.collectionViewLayout as! CustomCollectionViewLayout
-            layout.update = true
+            data[section].insert("Type new task!", at: indexPath.item)
             self.cardsCollectionView.insertItems(at: [indexPath])
-            self.cardsCollectionView.reloadData()
-        }, completion:// nil )
-        {
+        }, completion: {
             finished in
             if let cell = self.cardsCollectionView.cellForItem(at: indexPath) as? CardViewCell {
                 self.changedCell = cell
@@ -189,25 +178,115 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
         })
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        if proposedIndexPath.item == 0 {
+            return IndexPath(item: 1, section: 0)
+        } else {
+            return proposedIndexPath
+        }
+    }
+}
+
+extension CardsCollection: UICollectionViewDragDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
         
+        if let cell = collectionView.cellForItem(at: indexPath) as? CardViewCell {
+            let object = cell.textView.text ?? ""
+            let itemProvider = NSItemProvider(object: object as NSString)
+            let dragItem = UIDragItem(itemProvider: itemProvider)
+            
+            dragItem.localObject = object
+            session.localContext = indexPath
+            return [dragItem]
+        } else {
+            return []
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, dragSessionDidEnd session: UIDragSession) {
+        if let context = session.localContext as? IndexPath {
+            let index = IndexPath(item: 0, section: context.section)
+            if let cell = collectionView.cellForItem(at: index) {
+                cell.superview?.bringSubviewToFront(cell)
+            }
+        }
+    }
+}
+
+extension CardsCollection: UICollectionViewDropDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator)
+    {
+        let destinationIndexPath: IndexPath
+        if let indexPath = coordinator.destinationIndexPath {
+            if indexPath.item == 0 {
+                return
+            }
+            destinationIndexPath = indexPath
+        } else {
+            let endDragLocation = coordinator.session.location(in: collectionView)
+            var section: Int = 0
+            for cell in collectionView.visibleCells {
+                let indexPath = collectionView.indexPath(for: cell)!
+                if indexPath.item == 0 {
+                    let range = cell.frame.minX ... cell.frame.maxX
+                    if range.contains(endDragLocation.x) {
+                        section = indexPath.section
+                    }
+                }
+            }
+            let item = collectionView.numberOfItems(inSection: section) + 1
+
+            destinationIndexPath = IndexPath(item: item, section: section)
+            guard let source = coordinator.items.first?.sourceIndexPath,
+                source.section != destinationIndexPath.section else {
+                return
+            }
+        }
+        
+        switch coordinator.proposal.operation {
+        case .move:
+            self.reorderItems(coordinator: coordinator, destinationIndexPath: destinationIndexPath, collectionView: collectionView)
+            break
+        default:
+            return
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal
+    {
+        if collectionView.hasActiveDrag {
+            return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        } else {
+            return UICollectionViewDropProposal(operation: .forbidden)
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, canHandle session: UIDropSession) -> Bool {
+        return session.canLoadObjects(ofClass: NSString.self)
+    }
+    
+    private func reorderItems(coordinator: UICollectionViewDropCoordinator, destinationIndexPath: IndexPath, collectionView: UICollectionView)
+    {
+        let items = coordinator.items
+        if items.count == 1, let item = items.first, let sourceIndexPath = item.sourceIndexPath {
+            var dIndexPath = destinationIndexPath
+            if dIndexPath.item >= collectionView.numberOfItems(inSection: dIndexPath.section) {
+                dIndexPath.item -= 1
+            }
+            
+            collectionView.performBatchUpdates({
+                let textInfo = self.data[sourceIndexPath.section].remove(at: sourceIndexPath.item)
+                self.data[dIndexPath.section].insert(textInfo, at: dIndexPath.item)
+                collectionView.deleteItems(at: [sourceIndexPath])
+                collectionView.insertItems(at: [dIndexPath])
+            })
+            
+            coordinator.drop(item.dragItem, toItemAt: dIndexPath)
+        }
     }
 }
 
 
-//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//
-//        let visibleCells = cardsCollectionView.visibleCells
-//
-//
-//        let maxItemNumber = cardsCollectionView.indexPathsForVisibleItems.map{ $0.item }.max()
-//        let visibleCell = cardsCollectionView.indexPathsForVisibleItems[0]
-//
-//        if let max = maxItemNumber {
-//            if cardsCollectionView.frame.height > CGFloat(max + 1) * cardsCollectionView.cellForItem(at: IndexPath(item: visibleCell.item, section: visibleCell.section))!.frame.height {
-//                print("here")
-//            }
-//        }
-//
-//        print(cardsCollectionView.visibleSize)
-//    }
+

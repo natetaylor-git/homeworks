@@ -20,33 +20,22 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
     var cellAttributesDictionary = Dictionary<IndexPath, UICollectionViewLayoutAttributes>()
     var contentSize = CGSize.zero
     
-    var update = true
+    var deleteIndexPath: IndexPath? = nil
     
     override var collectionViewContentSize: CGSize {
         return self.contentSize
     }
     
     override func prepare() {
+        super.prepare()
+        
         guard let collectionView = collectionView else {
             return
         }
         
-        if !update {
-            let yOffset = collectionView.contentOffset.y
-            
-            for section in 0..<collectionView.numberOfSections {
-                let cellIndex = IndexPath(item: 0, section: section)
-                
-                if let attributes = cellAttributesDictionary[cellIndex] {
-                    var frame = attributes.frame
-                    frame.origin.y = yOffset + topPadding //+ cellHeight / 4
-                    attributes.frame = frame
-                }
-            }
-            return
-        }
-        
-        update = false
+        self.cellAttributesDictionary.removeAll()
+
+        let yOffset = collectionView.contentOffset.y
         
         var maxNumberOfItemsInSection = 0
         for section in 0..<collectionView.numberOfSections {
@@ -62,7 +51,7 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
                 let cellAttributes = UICollectionViewLayoutAttributes(forCellWith: cellIndex)
                 if item == 0 {
                     xPos = CGFloat(section) * (cellWidth + paddingX) + leftPadding
-                    yPos = topPadding //cellHeight / 4 + topPadding
+                    yPos = yOffset + topPadding
                     cellAttributes.frame = CGRect(origin: CGPoint(x: xPos, y: yPos),
                                                   size: CGSize(width: cellWidth, height: cellHeight * 3/4))
                      cellAttributes.zIndex = 2
@@ -90,13 +79,11 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         var visibleLayoutAttributes = [UICollectionViewLayoutAttributes]()
         
-        // Check each element to see if it should be returned.
         for attributes in cellAttributesDictionary.values {
             if attributes.frame.intersects(rect) {
                 visibleLayoutAttributes.append(attributes)
             }
         }
-        
         return visibleLayoutAttributes
     }
     

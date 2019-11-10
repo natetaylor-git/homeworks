@@ -22,6 +22,12 @@ class CardViewCell: UICollectionViewCell, UITextViewDelegate {
         return textView
     }()
     
+    override var alpha: CGFloat {
+        didSet {
+            super.alpha = 1.0
+        }
+    }
+    
     override func prepareForReuse() {
         self.textView.text = ""
     }
@@ -29,9 +35,6 @@ class CardViewCell: UICollectionViewCell, UITextViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
-//        self.label.textColor = .white
-//        self.label.frame = self.bounds
-//        self.contentView.addSubview(label)
         
         self.textView.delegate = self
         self.textView.frame = self.bounds.insetBy(dx: 10.0, dy: 20.0)

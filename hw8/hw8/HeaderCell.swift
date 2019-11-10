@@ -9,7 +9,9 @@
 import UIKit
 
 class HeaderCell: UICollectionViewCell {
+
     let label = UILabel()
+    
     let addButton: UIButton = {
        let button = UIButton()
         button.frame = .zero
@@ -42,7 +44,7 @@ class HeaderCell: UICollectionViewCell {
         self.label.font = UIFont.systemFont(ofSize: 20)
         self.contentView.addSubview(label)
         
-        let buttonSide = cellBounds.height - self.label.frame.height
+        let buttonSide = (cellBounds.height - self.label.frame.height) * 9/10
         let buttonOrigin = CGPoint(x: cellBounds.origin.x + (cellBounds.width - buttonSide) / 2,
                                    y: cellBounds.origin.y + self.label.frame.height)
         self.addButton.frame = CGRect(origin: buttonOrigin,
@@ -61,6 +63,10 @@ class HeaderCell: UICollectionViewCell {
         self.layer.borderWidth = 1.0
         self.layer.borderColor = UIColor.black.cgColor
         self.layer.cornerRadius = 5.0
+    }
+    
+    override func dragStateDidChange(_ dragState: UICollectionViewCell.DragState) {
+        
     }
     
 }
