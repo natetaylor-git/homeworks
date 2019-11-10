@@ -16,7 +16,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     
     var data = Data().allInfo
     var delegate: CardsCollectionDelegate?
-    var cardsCollectionPaddingY: CGFloat = 0 //100
+    var cardsCollectionPaddingY: CGFloat = 0
     var changedCell: CardViewCell?
     var oldCellFrame: CGRect = .zero
     var changingCellState = false
@@ -24,7 +24,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
     var cardsCollectionView: UICollectionView = {
         let layout = CustomCollectionViewLayout()
         let collectionView = UICollectionView.init(frame: .zero, collectionViewLayout:layout)
-        collectionView.backgroundColor = .groupTableViewBackground//UIColor.init(red: 229/255, green: 229/255, blue: 234/255, alpha: 1.0)
+        collectionView.backgroundColor = .groupTableViewBackground
         return collectionView
     }()
     
@@ -37,7 +37,7 @@ class CardsCollection: NSObject, UICollectionViewDataSource, UICollectionViewDel
                            size: CGSize(width: screenBoundsSize.width,
                                         height: screenBoundsSize.height - cardsCollectionPaddingY))
         
-        self.cardsCollectionView.contentInsetAdjustmentBehavior = .never //можно убрать
+        self.cardsCollectionView.contentInsetAdjustmentBehavior = .never
         self.cardsCollectionView.frame = frame
         //self.cardsCollectionView.layer.contents = UIImage(named: "BackgroundPicture")?.cgImage
         self.cardsCollectionView.dataSource = self
@@ -287,6 +287,3 @@ extension CardsCollection: UICollectionViewDropDelegate {
         }
     }
 }
-
-
-

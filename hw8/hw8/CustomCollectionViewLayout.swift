@@ -13,14 +13,12 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
     let cellWidth: CGFloat = 200.0
     let paddingY: CGFloat = 20.0
     let paddingX: CGFloat = 40.0
-    let topPadding: CGFloat = 0.0 //10.0
+    let topPadding: CGFloat = 0.0
     let leftPadding: CGFloat = 20.0
     let rightPadding: CGFloat = 20.0
     
     var cellAttributesDictionary = Dictionary<IndexPath, UICollectionViewLayoutAttributes>()
     var contentSize = CGSize.zero
-    
-    var deleteIndexPath: IndexPath? = nil
     
     override var collectionViewContentSize: CGSize {
         return self.contentSize

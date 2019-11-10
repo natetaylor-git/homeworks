@@ -30,8 +30,6 @@ class HeaderCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        //setup()
-        
         let cellBounds = self.bounds
         
         self.label.textAlignment = .center
@@ -57,16 +55,6 @@ class HeaderCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    func setup() {
-        self.layer.borderWidth = 1.0
-        self.layer.borderColor = UIColor.black.cgColor
-        self.layer.cornerRadius = 5.0
-    }
-    
-    override func dragStateDidChange(_ dragState: UICollectionViewCell.DragState) {
-        
     }
     
 }

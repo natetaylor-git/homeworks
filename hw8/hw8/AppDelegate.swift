@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let navigationController = UINavigationController.init(rootViewController: ViewController())
-        self.window?.rootViewController = navigationController//(collectionViewLayout: CustomCollectionViewLayout())
+        self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         return true
     }

@@ -15,7 +15,7 @@ class CardViewCell: UICollectionViewCell, UITextViewDelegate {
     let textView : UITextView = {
         let textView = UITextView()
         textView.frame = .zero
-        textView.backgroundColor = .white//UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 0.5)
+        textView.backgroundColor = .white
         textView.alpha = 0.7
         textView.textColor = UIColor.black
         textView.font = UIFont.systemFont(ofSize: 16)

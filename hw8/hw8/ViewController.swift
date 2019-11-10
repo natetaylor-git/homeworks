@@ -16,12 +16,6 @@ class ViewController: UIViewController, CardsCollectionDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-//        if (self.responds(to: #selector(getter: UIViewController.edgesForExtendedLayout)))
-//        {
-//            self.edgesForExtendedLayout = UIRectEdge()
-//        }
-        
         var yPaddingCollectioView: CGFloat = 0
         if let navigationBar = self.navigationController?.navigationBar {
             yPaddingCollectioView = navigationBar.frame.height + navigationBar.frame.origin.y
