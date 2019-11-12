@@ -9,7 +9,6 @@
 import UIKit
 
 protocol CollectionControllerProtocol {
-    //var collection: UICollectionView! {get}
     func deleteCell(at index: Int)
 }
 
@@ -56,6 +55,9 @@ class CollectionSupport: NSObject, UICollectionViewDataSource, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! CustomCollectionViewCell
         cell.alpha = 0.5
+        
+        //self.deleteData(at: indexPath.item)
+        //можно было сразу вызывать deleteData отсюда, но завернул в контроллер для единообразия
         self.controller.deleteCell(at: indexPath.item)
     }
 }
