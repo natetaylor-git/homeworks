@@ -32,7 +32,7 @@ class CollectionSupport: NSObject, UICollectionViewDataSource, UICollectionViewD
             }
             
             self.data.append(number)
-            DispatchQueue.main.async {
+            DispatchQueue.main.sync {
                 self.controller.collection.reloadData()
             }
         }
@@ -41,7 +41,7 @@ class CollectionSupport: NSObject, UICollectionViewDataSource, UICollectionViewD
     func deleteData(at index: Int) {
         queue.async(flags: .barrier) {
             self.data.remove(at: index)
-            DispatchQueue.main.async {
+            DispatchQueue.main.sync {
                 self.controller.collection.reloadData()
             }
         }
