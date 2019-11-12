@@ -12,7 +12,7 @@ class ViewController: UIViewController, CollectionControllerProtocol {
 
     var collection: UICollectionView!
     var collectionSourceAndDelegate: CollectionSupport!
-    var numberOfAdded: Int = 0
+//    var numberOfAdded: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +35,7 @@ class ViewController: UIViewController, CollectionControllerProtocol {
     
     func createAddButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(pressedAddButton))
-        self.navigationItem.title = String("Added: 0")
+//        self.navigationItem.title = String("Added: 0")
     }
     
 //    func createUpdateButton() {
@@ -43,8 +43,8 @@ class ViewController: UIViewController, CollectionControllerProtocol {
 //    }
     
     @objc func pressedAddButton() {
-        self.numberOfAdded += 1
-        self.navigationItem.title = "Added: " + String(numberOfAdded)
+//        self.numberOfAdded += 1
+//        self.navigationItem.title = "Added: " + String(numberOfAdded)
         self.addCell()
     }
     
