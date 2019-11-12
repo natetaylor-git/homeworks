@@ -28,7 +28,7 @@ class ViewController: UIViewController, CollectionControllerProtocol {
         collection.delegate = collectionSourceAndDelegate
         collection.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: "cellId")
         self.createAddButton()
-        self.createUpdateButton()
+//        self.createUpdateButton()
         
         self.view.addSubview(collection)
     }
@@ -38,9 +38,9 @@ class ViewController: UIViewController, CollectionControllerProtocol {
         self.navigationItem.title = String("Added: 0")
     }
     
-    func createUpdateButton() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(updateUI))
-    }
+//    func createUpdateButton() {
+//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(updateUI))
+//    }
     
     @objc func pressedAddButton() {
         self.numberOfAdded += 1
@@ -48,11 +48,11 @@ class ViewController: UIViewController, CollectionControllerProtocol {
         self.addCell()
     }
     
-    @objc func updateUI() {
-        self.numberOfAdded = 0
-        self.navigationItem.title = String("Added: 0")
-        collection.reloadData()
-    }
+//    @objc func updateUI() {
+//        self.numberOfAdded = 0
+//        self.navigationItem.title = String("Added: 0")
+//        collection.reloadData()
+//    }
     
     func addCell() {
         collectionSourceAndDelegate.addNewData()

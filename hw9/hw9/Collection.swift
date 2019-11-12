@@ -9,6 +9,7 @@
 import UIKit
 
 protocol CollectionControllerProtocol {
+    var collection: UICollectionView! {get}
     func deleteCell(at index: Int)
 }
 
@@ -31,12 +32,18 @@ class CollectionSupport: NSObject, UICollectionViewDataSource, UICollectionViewD
             }
             
             self.data.append(number)
+            DispatchQueue.main.async {
+                self.controller.collection.reloadData()
+            }
         }
     }
     
     func deleteData(at index: Int) {
         queue.async(flags: .barrier) {
             self.data.remove(at: index)
+            DispatchQueue.main.async {
+                self.controller.collection.reloadData()
+            }
         }
     }
     
