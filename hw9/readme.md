@@ -1,4 +1,4 @@
-# 1st task
+# 1st task of URLSessionLesson
 
 **Two variants:**
 1. Example of array class with thread safe operations
