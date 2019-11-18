@@ -14,7 +14,9 @@ class ViewController: UIViewController {
     
     var searchTimer: Timer?
     var searchText: String?
-    var cache = [Int: UIImage]()
+    var lastSearchText: String?
+    var searchPage: Int = 1
+    var cache = ThreadSafeCache()
     
 	var imageModels: [ImageModel] = []
 	let reuseId = "UITableViewCellreuseId"
@@ -52,14 +54,23 @@ class ViewController: UIViewController {
 			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
 		tableView.register(FlickrViewCell.self, forCellReuseIdentifier: reuseId)
 		tableView.dataSource = self
+        tableView.prefetchDataSource = self
         tableView.allowsSelection = false
 	}
 
 	@objc private func search() {
-        self.cache.removeAll()
+        if let lastSearch = self.lastSearchText, let currentSearch = searchText, lastSearch == currentSearch {
+            print("page number: ", self.searchPage)
+        } else {
+            self.searchPage = 1
+            self.cache.removeAll()
+            self.imageModels.removeAll()
+            self.tableView.reloadData()
+        }
         
         if let searchString = self.searchText {
-            self.interactor.loadImageList(by: searchString) { [weak self] models in
+            self.lastSearchText = searchText
+            self.interactor.loadImageList(by: searchString, page: self.searchPage) { [weak self] models in
                 self?.loadImages(with: models)
             }
         } else {
@@ -68,7 +79,7 @@ class ViewController: UIViewController {
 	}
 
 	private func loadImages(with models: [ImageModel]) {
-        imageModels = models
+        imageModels.append(contentsOf: models)
 
         DispatchQueue.main.async {
             self.tableView.reloadData()
@@ -105,6 +116,18 @@ extension ViewController: UITableViewDataSource {
 
 		return cell
 	}
+}
+
+extension ViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        let rows = indexPaths.map{$0.row}
+        let tenthFromEndNumber = 100 * self.searchPage - 10
+        if rows.contains(tenthFromEndNumber) {
+            //print("new batch")
+            self.searchPage += 1
+            self.search()
+        }
+    }
 }
 
 extension ViewController: UISearchBarDelegate {

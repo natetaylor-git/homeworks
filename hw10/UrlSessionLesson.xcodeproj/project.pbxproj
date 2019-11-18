@@ -17,6 +17,7 @@
 		14BF1F4E23728A9C00937E1C /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BF1F4D23728A9C00937E1C /* NetworkService.swift */; };
 		14E6F855237326C600977C9F /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E6F854237326C600977C9F /* API.swift */; };
 		431BA79F2382042200221095 /* FlickrViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431BA79E2382042200221095 /* FlickrViewCell.swift */; };
+		43ECD5A723823C7A00FEBB58 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43ECD5A623823C7A00FEBB58 /* Cache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		14BF1F4D23728A9C00937E1C /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		14E6F854237326C600977C9F /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		431BA79E2382042200221095 /* FlickrViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrViewCell.swift; sourceTree = "<group>"; };
+		43ECD5A623823C7A00FEBB58 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +93,7 @@
 				14BF1F38237289C200937E1C /* ViewController.swift */,
 				14BF1F48237289DD00937E1C /* Interactor.swift */,
 				431BA79E2382042200221095 /* FlickrViewCell.swift */,
+				43ECD5A623823C7A00FEBB58 /* Cache.swift */,
 			);
 			path = Module;
 			sourceTree = "<group>";
@@ -166,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				14BF1F39237289C200937E1C /* ViewController.swift in Sources */,
+				43ECD5A723823C7A00FEBB58 /* Cache.swift in Sources */,
 				14BF1F4B23728A1900937E1C /* ImageModel.swift in Sources */,
 				14BF1F35237289C200937E1C /* AppDelegate.swift in Sources */,
 				14BF1F49237289DD00937E1C /* Interactor.swift in Sources */,

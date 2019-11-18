@@ -10,7 +10,7 @@ import UIKit
 
 protocol InteractorInput {
 	func loadImage(at path: String, completion: @escaping (UIImage?) -> Void)
-	func loadImageList(by searchString: String, completion: @escaping ([ImageModel]) -> Void)
+    func loadImageList(by searchString: String, page number: Int, completion: @escaping ([ImageModel]) -> Void)
 }
 
 class Interactor: InteractorInput {
@@ -31,8 +31,8 @@ class Interactor: InteractorInput {
 		}
 	}
 
-	func loadImageList(by searchString: String, completion: @escaping ([ImageModel]) -> Void) {
-		let url = API.searchPath(text: searchString, extras: "url_m")
+    func loadImageList(by searchString: String, page number: Int, completion: @escaping ([ImageModel]) -> Void) {
+        let url = API.searchPath(text: searchString, extras: "url_m", page: number)
 		networkService.getData(at: url) { data in
 			guard let data = data else {
 				completion([])
@@ -47,6 +47,7 @@ class Interactor: InteractorInput {
 					return
 			}
 
+            //print(response)
 			let models = photosArray.map { (object) -> ImageModel in
 				let urlString = object["url_m"] as? String ?? ""
 				let	title = object["title"] as? String ?? ""
