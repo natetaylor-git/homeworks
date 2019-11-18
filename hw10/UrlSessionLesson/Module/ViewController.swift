@@ -14,11 +14,12 @@ class ViewController: UIViewController {
     
     var searchTimer: Timer?
     var searchText: String?
-    var lastSearchText: String?
+    var sameSearch: Bool = false
     var searchPage: Int = 1
-    var cache = ThreadSafeCache()
     
-	var imageModels: [ImageModel] = []
+    var cache = ThreadSafeCache() //[Int: ImageViewModel]()
+    var imageModels = ThreadSafeImageModelCollection() //[ImageModel]()
+    
 	let reuseId = "UITableViewCellreuseId"
 	let interactor: InteractorInput
 
@@ -58,15 +59,12 @@ class ViewController: UIViewController {
         tableView.allowsSelection = false
 	}
 
-	@objc private func search() {
-        if let lastSearch = self.lastSearchText, let currentSearch = searchText, lastSearch == currentSearch {
-            print("page number: ", self.searchPage)
-        } else {
-            self.resetSearch()
+    @objc private func search() {
+        if self.sameSearch == false {
+            self.searchPage = 1
         }
         
         if let searchString = self.searchText {
-            self.lastSearchText = searchText
             self.interactor.loadImageList(by: searchString, page: self.searchPage) { [weak self] models in
                 self?.loadImages(with: models)
             }
@@ -74,21 +72,62 @@ class ViewController: UIViewController {
             print("no search text")
         }
 	}
+   
+// MARK: - Variant#1 loadImages downloads models page by page and saves images here to cache for tableView cells
+    
+//    private func loadImages(with models: [ImageModel]) {
+//        if self.sameSearch == false {
+//            self.cache.removeAll()
+//            self.imageModels.removeAll()
+//        }
+//
+//        let existedNumberOfImages = self.imageModels.count
+//        self.imageModels.append(contentsOf: models)
+//
+//        let group = DispatchGroup()
+//
+//        for item in models.enumerated() {
+//            group.enter()
+//            let model = item.element
+//            let index = item.offset + existedNumberOfImages
+//            self.interactor.loadImage(at: model.path) { [weak self] (image) in
+//                guard let image = image else {
+//                    group.leave()
+//                    return
+//                }
+//
+//                let imageViewModel = ImageViewModel(description: model.description, image: image)
+//                self?.cache[index] = imageViewModel
+//
+//                group.leave()
+//            }
+//        }
+//
+//        group.notify(queue: DispatchQueue.main) {
+//            if self.sameSearch == false {
+//                self.tableView.contentOffset = .zero
+//            }
+//            self.tableView.reloadData()
+//        }
+//    }
 
+// MARK: - Variant#2 loadImages only downloads models and
+//                   reloads tableView Data (changes amount of cells in tableView)
+    
 	private func loadImages(with models: [ImageModel]) {
-        imageModels.append(contentsOf: models)
+        if self.sameSearch == false {
+            self.imageModels.removeAll()
+            self.cache.removeAll()
+        }
 
+        self.imageModels.append(contentsOf: models)
         DispatchQueue.main.async {
+            if self.sameSearch == false {
+                self.tableView.contentOffset = .zero
+            }
             self.tableView.reloadData()
         }
 	}
-    
-    private func resetSearch() {
-        self.searchPage = 1
-        self.cache.removeAll()
-        self.imageModels.removeAll()
-        self.tableView.reloadData()
-    }
 }
 
 extension ViewController: UITableViewDataSource {
@@ -97,37 +136,76 @@ extension ViewController: UITableViewDataSource {
 		return imageModels.count
 	}
 
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: reuseId, for: indexPath) as! FlickrViewCell
-        let model = self.imageModels[indexPath.row]
+// MARK: - tableView method for variant#1 (page by page)
+    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: reuseId, for: indexPath) as! FlickrViewCell
+//        cell.imageView?.image =  UIImage(named: "EmptyImage")
+//
+//        if cache.keys.contains(indexPath.row) {
+//            cell.imageView?.image = cache[indexPath.row]!.image
+//            cell.textLabel?.text = cache[indexPath.row]!.description
+//        } else {
+//            cell.textLabel?.text = "empty cell"
+//        }
+//
+//        return cell
+//    }
+    
+// MARK: - tableView method for variant#2
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseId, for: indexPath) as! FlickrViewCell
+
+        if self.imageModels.count == 0 {
+            print("no data")
+            return cell
+        }
         
-        cell.textLabel?.text = String(indexPath.row) + " " + model.description
-        
-        if cache.keys.contains(indexPath.row) {
-            cell.imageView?.image = cache[indexPath.row]
+        let rowNumber = indexPath.row
+        let model = self.imageModels[rowNumber]
+
+        if cache.keys.contains(rowNumber) {
+            cell.imageView?.image = cache[rowNumber]!.image
+            cell.textLabel?.text = String(rowNumber) + " " + cache[rowNumber]!.description
+            //cell.textLabel?.text = String(rowNumber) + " cache " + cache[rowNumber]!.description
+
         } else {
             cell.imageView?.image = UIImage(named: "EmptyImage")
+            cell.textLabel?.text = "waiting"
             let imagePath = model.path
+
             self.interactor.loadImage(at: imagePath) {[weak self] (image) in
-                guard let cellImage = image else { return }
+                let index = rowNumber
                 
-                self?.cache[indexPath.row] = cellImage
+                guard let cellImage = image else {
+                    cell.textLabel?.text = String(indexPath.row) + " " + "invalid image"
+                    return
+                }
+                let description = model.description
+                self?.cache[index] = ImageViewModel(description: description, image: cellImage)
+
                 DispatchQueue.main.async {
-                    cell.imageView?.image = cellImage
+                    let cell = self?.tableView.cellForRow(at: IndexPath(row: index, section: 0))
+                    cell?.imageView?.image = cellImage
+                    cell?.textLabel?.text = String(indexPath.row) + " " + description
                 }
             }
         }
 
-		return cell
-	}
+        return cell
+    }
 }
 
 extension ViewController: UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         let rows = indexPaths.map{$0.row}
-        let tenthFromEndNumber = 100 * self.searchPage - 10
+        let downloadAtOffset: Int = 10
+        let pageSize: Int = 100
+        let tenthFromEndNumber = pageSize * self.searchPage - downloadAtOffset
         if rows.contains(tenthFromEndNumber) {
             //print("new batch")
+            self.sameSearch = true
             self.searchPage += 1
             self.search()
         }
@@ -142,10 +220,9 @@ extension ViewController: UISearchBarDelegate {
         }
         
         if searchText != "" {
+            self.sameSearch = false
             self.searchText = searchText
             searchTimer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(search), userInfo: nil, repeats: false)
-        } else {
-            self.resetSearch()
         }
     }
 }

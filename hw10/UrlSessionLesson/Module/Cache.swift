@@ -10,10 +10,10 @@ import UIKit
 
 class ThreadSafeCache {
     private let queue = DispatchQueue(label: "com.cacheQueue", attributes: .concurrent)
-    private var cache = [Int: UIImage]()
+    private var cache = [Int: ImageViewModel]()
     
-    public var keys: Dictionary<Int, UIImage>.Keys {
-        var keys = Dictionary<Int, UIImage>().keys
+    public var keys: Dictionary<Int, ImageViewModel>.Keys {
+        var keys = Dictionary<Int, ImageViewModel>().keys
         self.queue.sync {
             keys = cache.keys
         }
@@ -26,10 +26,9 @@ class ThreadSafeCache {
         }
     }
     
-    public subscript(key: Int) -> UIImage? {
+    public subscript(key: Int) -> ImageViewModel? {
         get {
-            var item: UIImage?
-            // так как есть return, надо дождаться получения item, чтобы не было crash
+            var item: ImageViewModel?
             self.queue.sync {
                 item = self.cache[key]
             }

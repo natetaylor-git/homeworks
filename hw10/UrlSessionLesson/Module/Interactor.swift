@@ -47,7 +47,9 @@ class Interactor: InteractorInput {
 					return
 			}
 
-            //print(response)
+//            print(searchString)
+//            print(photosDictionary["pages"])
+//            print(response)
 			let models = photosArray.map { (object) -> ImageModel in
 				let urlString = object["url_m"] as? String ?? ""
 				let	title = object["title"] as? String ?? ""
