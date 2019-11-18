@@ -62,10 +62,7 @@ class ViewController: UIViewController {
         if let lastSearch = self.lastSearchText, let currentSearch = searchText, lastSearch == currentSearch {
             print("page number: ", self.searchPage)
         } else {
-            self.searchPage = 1
-            self.cache.removeAll()
-            self.imageModels.removeAll()
-            self.tableView.reloadData()
+            self.resetSearch()
         }
         
         if let searchString = self.searchText {
@@ -85,6 +82,13 @@ class ViewController: UIViewController {
             self.tableView.reloadData()
         }
 	}
+    
+    private func resetSearch() {
+        self.searchPage = 1
+        self.cache.removeAll()
+        self.imageModels.removeAll()
+        self.tableView.reloadData()
+    }
 }
 
 extension ViewController: UITableViewDataSource {
@@ -140,6 +144,8 @@ extension ViewController: UISearchBarDelegate {
         if searchText != "" {
             self.searchText = searchText
             searchTimer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(search), userInfo: nil, repeats: false)
+        } else {
+            self.resetSearch()
         }
     }
 }
