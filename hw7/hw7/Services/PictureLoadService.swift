@@ -10,8 +10,9 @@ import Foundation
 
 protocol PictureLoadServiceProtocol: class {
     var urlSource: String { get }
-    func downloadImage(completion: @escaping (Data?, Error?) -> Void)
+    func downloadImage(completion: @escaping (Data?, URLResponse?, Error?) -> Void)
     func downloadImageFromCache(completion: @escaping (Data?, Error?) -> Void)
+    func saveToCache(data: Data, response: URLResponse?)
     func cleanCache()
 }
 
@@ -40,32 +41,33 @@ class PictureLoadService: PictureLoadServiceProtocol {
         }
     }
     
-    func downloadImage(completion: @escaping (Data?, Error?) -> Void) {
+    func downloadImage(completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
         guard let url = URL(string: self.urlSource) else {
-            completion(nil, CustomError.noUrl)
+            completion(nil, nil, CustomError.noUrl)
             return
         }
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let currentError = error {
-                completion(nil, CustomError.sessionError(currentError))
+                completion(nil, nil, CustomError.sessionError(currentError))
                 return
             }
             
             guard let currentData = data else {
-                completion(nil, CustomError.noData(self.urlSource))
+                completion(nil, nil, CustomError.noData(self.urlSource))
                 return
             }
             
             let imageData = currentData
             self.saveToCache(data: imageData, response: response!)
-            completion(imageData, nil)
+            completion(imageData, response, nil)
         }
         
         task.resume()
     }
     
-    private func saveToCache(data: Data, response: URLResponse) {
+    func saveToCache(data: Data, response: URLResponse?) {
+        guard let response = response else { return }
         guard let responseURL = response.url else { return }
         let cachedResponse = CachedURLResponse(response: response, data: data)
         URLCache.shared.storeCachedResponse(cachedResponse, for: URLRequest(url: responseURL))
