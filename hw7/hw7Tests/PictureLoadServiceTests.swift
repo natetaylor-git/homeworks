@@ -11,11 +11,14 @@ import XCTest
 
 class PictureLoadServiceTests: XCTestCase {
     var loadService: PictureLoadServiceProtocol!
+    var sessionMock: URLSessionMock!
     var promise: XCTestExpectation!
 
     override func setUp() {
         super.setUp()
-        loadService = PictureLoadService()
+        
+        sessionMock = URLSessionMock()
+        loadService = PictureLoadService(session: sessionMock)
     }
 
     override func tearDown() {
@@ -23,24 +26,22 @@ class PictureLoadServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testThatPictureLoadServiceWorksCorrectly() {
+    func testThatPictureLoadServiceReturnsData() {
         // arrange
         promise = expectation(description: "Testing image downloading")
         var testData: Data?
-        var testError: Error?
-        var testResponse: URLResponse?
+        let sessionData = Data(base64Encoded: "test")
+        sessionMock.data = sessionData
+        
         // act
         loadService.downloadImage { (data, response, error) in
             testData = data
-            testError = error
-            testResponse = response
             self.promise.fulfill()
         }
-        
         waitForExpectations(timeout: 5.0, handler: nil)
+        
         // assert
-        XCTAssertNotNil(testResponse)
-        XCTAssertTrue(testData != nil || testError != nil)
+        XCTAssertEqual(testData, sessionData)
     }
     
     func testExample() {
@@ -54,14 +55,28 @@ class PictureLoadServiceTests: XCTestCase {
 
 }
 
-//class PresenterStub: PictureInteractorOutputProtocol {
-//    func setImage(with imageData: Data) {
-//        return
-//    }
-//
-//    func setError(with error: Error) {
-//        return
-//    }
-//
-//    
-//}
+class URLSessionDataTaskMock: URLSessionDataTask {
+    private let closure: () -> Void
+    
+    init(closure: @escaping () -> Void) {
+        self.closure = closure
+    }
+    
+    override func resume() {
+        self.closure()
+    }
+}
+
+class URLSessionMock: URLSession {
+    var data: Data?
+    var error: Error?
+    
+    override func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+        let data = self.data
+        let error = self.error
+        
+        return URLSessionDataTaskMock {
+            completionHandler(data, nil, error)
+        }
+    }
+}

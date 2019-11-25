@@ -41,13 +41,21 @@ class PictureLoadService: PictureLoadServiceProtocol {
         }
     }
     
+    private let session: URLSession
+    private let cache: URLCache
+    
+    init(session: URLSession = URLSession.shared, cache: URLCache = URLCache.shared) {
+        self.session = session
+        self.cache = cache
+    }
+    
     func downloadImage(completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
         guard let url = URL(string: self.urlSource) else {
             completion(nil, nil, CustomError.noUrl)
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        let task = session.dataTask(with: url) { data, response, error in
             if let currentError = error {
                 completion(nil, nil, CustomError.sessionError(currentError))
                 return
@@ -59,7 +67,6 @@ class PictureLoadService: PictureLoadServiceProtocol {
             }
             
             let imageData = currentData
-            self.saveToCache(data: imageData, response: response!)
             completion(imageData, response, nil)
         }
         
@@ -70,7 +77,7 @@ class PictureLoadService: PictureLoadServiceProtocol {
         guard let response = response else { return }
         guard let responseURL = response.url else { return }
         let cachedResponse = CachedURLResponse(response: response, data: data)
-        URLCache.shared.storeCachedResponse(cachedResponse, for: URLRequest(url: responseURL))
+        cache.storeCachedResponse(cachedResponse, for: URLRequest(url: responseURL))
     }
     
     func downloadImageFromCache(completion: @escaping (Data?, Error?) -> Void) {
@@ -78,7 +85,7 @@ class PictureLoadService: PictureLoadServiceProtocol {
             return completion(nil, CustomError.noUrl)
         }
         
-        if let cachedResponse = URLCache.shared.cachedResponse(for: URLRequest(url: url)) {
+        if let cachedResponse = cache.cachedResponse(for: URLRequest(url: url)) {
             return completion(cachedResponse.data, nil)
         } else {
             return completion(nil, CustomError.emptyCache)
