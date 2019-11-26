@@ -33,31 +33,37 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
         return button
     }()
     
-    var showFilters = false {
+    var showFilters: Bool = true {
         willSet(newValue) {
-            let window = UIApplication.shared.windows[0]
-            let safeFrame = window.safeAreaLayoutGuide.layoutFrame
-            let imageViewHeight = safeFrame.height * 3/4
             if newValue {
                 UIView.animate(withDuration: 0.5, animations: {
-                    self.imageView.frame.size = CGSize(width: self.imageView.frame.width, height: imageViewHeight)
+                    self.careTaker?.undo()
                 }) { (finished) in
                     self.filtersCollectionView.alpha = 1.0
                 }
             } else {
+                let window = UIApplication.shared.windows[0]
+                let safeFrame = window.safeAreaLayoutGuide.layoutFrame
+                let imageViewHeight = safeFrame.height * 3/4
                 let filtersCollectionViewHeight = self.filtersCollectionView.frame.height
-                self.imageView.frame.size = CGSize(width: self.imageView.frame.width,
-                                                   height: imageViewHeight + filtersCollectionViewHeight)
+                careTaker?.backup()
+                self.creator?.setNewSize(size: CGSize(width: self.imageView.frame.width,
+                                                      height: imageViewHeight + filtersCollectionViewHeight))
                 self.filtersCollectionView.alpha = 0.0
             }
         }
     }
     
+    var creator: ImageViewCreator?
+    var careTaker: CareTaker?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        creator = ImageViewCreator(self.imageView)
+        careTaker = CareTaker(creator: creator!)
+        
         setupUI()
-        showFilters = false
         
         self.imageView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped))
@@ -83,7 +89,7 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
         
         let imageViewFrame = CGRect(origin: safeFrame.origin,
                                     size: CGSize(width: safeFrame.width, height: imageViewHeight))
-        self.imageView = UIImageView(frame: imageViewFrame)
+        self.imageView.frame = imageViewFrame
         self.imageView.image = UIImage(named: "DefaultImage")
         self.imageView.contentMode = .scaleAspectFill
         self.imageView.backgroundColor = .black
@@ -98,8 +104,6 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
         self.filtersCollectionView.backgroundColor = .groupTableViewBackground
         self.view.addSubview(filtersCollectionView)
         
-//        let galleryButtonFrame = CGRect(origin: CGPoint(x: safeFrame.minX, y: filtersCollectionView.frame.maxY),
-//                                        size: CGSize(width: safeFrame.width / 2, height: buttonsHeight))
         let galleryButtonFrame = CGRect(origin: CGPoint(x: safeFrame.minX,
                                                         y: safeFrame.origin.y + imageViewHeight + filtersCollectionViewHeight),
                                         size: CGSize(width: safeFrame.width / 2, height: buttonsHeight))
@@ -122,6 +126,8 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
         cameraButton.layer.borderWidth = 1.0
         cameraButton.layer.borderColor = UIColor.black.cgColor
         self.view.addSubview(cameraButton)
+        
+        showFilters = false
     }
     
     @objc func imageViewTapped() {

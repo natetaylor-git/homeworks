@@ -8,8 +8,13 @@
 
 import UIKit
 
-protocol FiltersEffectsProtocol {
+protocol FiltersEffectsDelegate {
     func addFilters(for collectionView: UICollectionView)
+}
+
+protocol FiltersEffectsProtocol {
+    var collection: [Filter] { get }
+    func addFilter(named filterName: String, to image: UIImage) -> UIImage
 }
 
 struct Filter {
@@ -21,9 +26,8 @@ struct Filter {
     }
 }
 
-class Filters {
+class FiltersEffects {
     var collection = [Filter]()
-    var names = [String: String]()
     //var filterQueue = OperationQueue()
     
     init() {
@@ -41,42 +45,8 @@ class Filters {
 //        filterQueue.maxConcurrentOperationCount = collection.count
     }
     
-//    func cancelAllFiltersTasks() {
-//        filterQueue.cancelAllOperations()
-//    }
-//    
-//    func addFilterOperation(named filterName: String, to image: UIImage, completion: @escaping (UIImage?) ->()) {
-//        filterQueue.addOperation {
-//            let outputImage = self.addFilter(named: filterName, to: image)
-//            completion(outputImage)
-//        }
-//    }
-    
-    func resizeImage(_ image: UIImage) -> UIImage {
-        let imageSize = image.size
-        let targetSize = CGSize(width: imageSize.width / 2, height: imageSize.height / 2)
-        
-        let scaleX = targetSize.width / imageSize.width
-        let scaleY = targetSize.height / imageSize.height
-        let newSize = CGSize(width: scaleX * imageSize.width, height: scaleY * imageSize.height)
-        let rect = CGRect(origin: .zero, size: newSize)
-            
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-        image.draw(in: rect)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        guard let result = newImage else {
-            print("can't resize image")
-            return image
-        }
-        
-        return result
-    }
-    
     func addFilter(named filterName: String, to image: UIImage) -> UIImage {
-        let resizedImage = resizeImage(image)
-        let imageToDisplay = self.normalizedImage(of: resizedImage)
+        let imageToDisplay = self.normalizedImage(of: image)
         
         let context = CIContext(options: nil)
         let ciImage = CIImage(image: imageToDisplay)
@@ -122,4 +92,16 @@ class Filters {
         UIGraphicsEndImageContext()
         return normalizedImage
     }
+    
+    //    func cancelAllFiltersTasks() {
+    //        filterQueue.cancelAllOperations()
+    //    }
+    //
+    //    func addFilterOperation(named filterName: String, to image: UIImage, completion: @escaping (UIImage?) ->()) {
+    //        filterQueue.addOperation {
+    //            let outputImage = self.addFilter(named: filterName, to: image)
+    //            completion(outputImage)
+    //        }
+    //    }
 }
+

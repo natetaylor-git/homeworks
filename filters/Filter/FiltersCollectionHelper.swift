@@ -14,7 +14,7 @@ protocol FilterCollectionHelperDelegate: class {
 }
 
 class FiltersCollectionHelper: NSObject, UICollectionViewDataSource {
-    let filters = Filters()
+    let filters: FiltersEffectsProxy
     var filteredImages = [UIImage?]()
     var currentImage: UIImage? {
         willSet {
@@ -27,8 +27,10 @@ class FiltersCollectionHelper: NSObject, UICollectionViewDataSource {
     private let queue = DispatchQueue(label: "com.filters.queue", qos: .utility, attributes: .concurrent, autoreleaseFrequency: .never, target: nil)
     
     override init() {
-        super.init()
+        let filtersEffects = FiltersEffects()
+        self.filters = FiltersEffectsProxy(filtersEffects: filtersEffects)
         self.filteredImages = [UIImage?].init(repeating: nil, count: self.filters.collection.count)
+        super.init()
     }
     
     func resetFilteredImages() {
@@ -82,7 +84,7 @@ extension FiltersCollectionHelper: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension FiltersCollectionHelper: FiltersEffectsProtocol {
+extension FiltersCollectionHelper: FiltersEffectsDelegate {
     func addFilters(for collectionView: UICollectionView) {
         guard let currentImage = currentImage else {
             print("no image for filters")
