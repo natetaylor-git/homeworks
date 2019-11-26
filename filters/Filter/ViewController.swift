@@ -23,15 +23,17 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
         return collectionView
     }()
     
-    let galleryButton: UIButton = {
-        let button = UIButton()
+    let galleryButton: ActionButton = {
+        let button = ActionButton(frame: .zero, name: "Gallery")
         return button
     }()
     
-    let cameraButton: UIButton = {
-        let button = UIButton()
+    let cameraButton: ActionButton = {
+        let button = ActionButton(frame: .zero, name: "Camera")
         return button
     }()
+    
+    var safeFrame: CGRect = .zero
     
     var showFilters: Bool = true {
         willSet(newValue) {
@@ -42,14 +44,15 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
                     self.filtersCollectionView.alpha = 1.0
                 }
             } else {
-                let window = UIApplication.shared.windows[0]
-                let safeFrame = window.safeAreaLayoutGuide.layoutFrame
+                self.filtersCollectionView.alpha = 0.0
+                
                 let imageViewHeight = safeFrame.height * 3/4
                 let filtersCollectionViewHeight = self.filtersCollectionView.frame.height
+                let newSize = CGSize(width: self.imageView.frame.width,
+                                     height: imageViewHeight + filtersCollectionViewHeight)
+                
                 careTaker?.backup()
-                self.creator?.setNewSize(size: CGSize(width: self.imageView.frame.width,
-                                                      height: imageViewHeight + filtersCollectionViewHeight))
-                self.filtersCollectionView.alpha = 0.0
+                self.creator?.setNewSize(size: newSize)
             }
         }
     }
@@ -84,7 +87,7 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
     
     func setupUI() {
         let window = UIApplication.shared.windows[0]
-        let safeFrame = window.safeAreaLayoutGuide.layoutFrame
+        self.safeFrame = window.safeAreaLayoutGuide.layoutFrame
         let imageViewHeight = safeFrame.height * 3/4
         let filtersCollectionViewHeight = (safeFrame.height - imageViewHeight) * 3/4
         let buttonsHeight = self.view.frame.height - safeFrame.minY - imageViewHeight - filtersCollectionViewHeight
@@ -106,29 +109,18 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
         self.filtersCollectionView.backgroundColor = .groupTableViewBackground
         self.view.addSubview(filtersCollectionView)
         
-        let galleryButtonFrame = CGRect(origin: CGPoint(x: safeFrame.minX,
-                                                        y: safeFrame.origin.y + imageViewHeight + filtersCollectionViewHeight),
+        let galleryButtonOrigin = CGPoint(x: safeFrame.minX,
+                                          y: safeFrame.origin.y + imageViewHeight + filtersCollectionViewHeight)
+        let galleryButtonFrame = CGRect(origin: galleryButtonOrigin,
                                         size: CGSize(width: safeFrame.width / 2, height: buttonsHeight))
         galleryButton.frame = galleryButtonFrame
         galleryButton.addTarget(self, action: #selector(galleryButtonTapped), for: .touchUpInside)
-        galleryButton.setTitle("Gallery", for: .normal)
-        galleryButton.setTitleColor(.black, for: .normal)
-        galleryButton.backgroundColor = .white
-        galleryButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        galleryButton.layer.borderWidth = 1.0
-        galleryButton.layer.borderColor = UIColor.black.cgColor
         self.view.addSubview(galleryButton)
         
         var cameraButtonFrame = galleryButtonFrame
         cameraButtonFrame.origin.x = galleryButton.frame.origin.x + galleryButton.frame.width
         cameraButton.frame = cameraButtonFrame
         cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
-        cameraButton.setTitle("Camera", for: .normal)
-        cameraButton.setTitleColor(.black, for: .normal)
-        cameraButton.backgroundColor = .white
-        cameraButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        cameraButton.layer.borderWidth = 1.0
-        cameraButton.layer.borderColor = UIColor.black.cgColor
         self.view.addSubview(cameraButton)
         
         showFilters = false

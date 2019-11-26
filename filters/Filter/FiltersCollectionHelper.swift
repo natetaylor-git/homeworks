@@ -27,7 +27,7 @@ class FiltersCollectionHelper: NSObject, UICollectionViewDataSource {
     private let queue = DispatchQueue(label: "com.filters.queue", qos: .utility, attributes: .concurrent, autoreleaseFrequency: .never, target: nil)
     
     override init() {
-        let filtersEffects = FiltersEffects()
+        let filtersEffects = FiltersEffects.shared
         self.filters = FiltersEffectsProxy(filtersEffects: filtersEffects)
         self.filteredImages = [UIImage?].init(repeating: nil, count: self.filters.collection.count)
         super.init()

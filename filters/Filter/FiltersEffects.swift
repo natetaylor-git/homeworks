@@ -26,10 +26,15 @@ struct Filter {
     }
 }
 
-class FiltersEffects {
+class FiltersEffects: FiltersEffectsProtocol {
+    static var shared: FiltersEffects = {
+        let singleton = FiltersEffects()
+        return singleton
+    }()
+    
     var collection = [Filter]()
     
-    init() {
+    private init() {
         let originalImage = Filter(name: "Original")
         let noirFilter = Filter(name: "PhotoEffectNoir")
         let comicFilter = Filter(name: "ComicEffect")
@@ -88,6 +93,12 @@ class FiltersEffects {
         }
         UIGraphicsEndImageContext()
         return normalizedImage
+    }
+}
+
+extension FiltersEffects: NSCopying {
+    func copy(with zone: NSZone? = nil) -> Any {
+        return self
     }
 }
 

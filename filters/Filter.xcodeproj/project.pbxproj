@@ -18,6 +18,7 @@
 		43485B02238C9D2600877813 /* ImageViewMementoPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43485B01238C9D2600877813 /* ImageViewMementoPattern.swift */; };
 		43485B04238CB5E200877813 /* FiltersEffectsProxyPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43485B03238CB5E200877813 /* FiltersEffectsProxyPattern.swift */; };
 		43485B08238D6C2000877813 /* ButtonsStatePattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43485B07238D6C2000877813 /* ButtonsStatePattern.swift */; };
+		43485B0C238D95A300877813 /* CustomActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43485B0B238D95A300877813 /* CustomActionButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		43485B01238C9D2600877813 /* ImageViewMementoPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewMementoPattern.swift; sourceTree = "<group>"; };
 		43485B03238CB5E200877813 /* FiltersEffectsProxyPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersEffectsProxyPattern.swift; sourceTree = "<group>"; };
 		43485B07238D6C2000877813 /* ButtonsStatePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonsStatePattern.swift; sourceTree = "<group>"; };
+		43485B0B238D95A300877813 /* CustomActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActionButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				4330B0172389C3930063447D /* ViewController.swift */,
 				4330B0272389E2350063447D /* FiltersCollectionHelper.swift */,
 				4330B0292389E3910063447D /* FilteredImageCell.swift */,
+				43485B0B238D95A300877813 /* CustomActionButton.swift */,
 				4330B02B2389FB980063447D /* FiltersEffects.swift */,
 				43485B01238C9D2600877813 /* ImageViewMementoPattern.swift */,
 				43485B03238CB5E200877813 /* FiltersEffectsProxyPattern.swift */,
@@ -159,6 +162,7 @@
 				4330B02A2389E3910063447D /* FilteredImageCell.swift in Sources */,
 				4330B0282389E2350063447D /* FiltersCollectionHelper.swift in Sources */,
 				4330B0182389C3930063447D /* ViewController.swift in Sources */,
+				43485B0C238D95A300877813 /* CustomActionButton.swift in Sources */,
 				4330B0162389C3930063447D /* AppDelegate.swift in Sources */,
 				43485B02238C9D2600877813 /* ImageViewMementoPattern.swift in Sources */,
 			);
