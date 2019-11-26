@@ -28,7 +28,6 @@ struct Filter {
 
 class FiltersEffects {
     var collection = [Filter]()
-    //var filterQueue = OperationQueue()
     
     init() {
         let originalImage = Filter(name: "Original")
@@ -41,8 +40,6 @@ class FiltersEffects {
                                         parameters: ["inputRadius": 10.0,
                                                      "inputCenter": CIVector(x: 150, y: 150)])
         self.collection = [originalImage, comicFilter, noirFilter, unsharpFilter, circleSplashFilter]
-        
-//        filterQueue.maxConcurrentOperationCount = collection.count
     }
     
     func addFilter(named filterName: String, to image: UIImage) -> UIImage {
@@ -92,16 +89,5 @@ class FiltersEffects {
         UIGraphicsEndImageContext()
         return normalizedImage
     }
-    
-    //    func cancelAllFiltersTasks() {
-    //        filterQueue.cancelAllOperations()
-    //    }
-    //
-    //    func addFilterOperation(named filterName: String, to image: UIImage, completion: @escaping (UIImage?) ->()) {
-    //        filterQueue.addOperation {
-    //            let outputImage = self.addFilter(named: filterName, to: image)
-    //            completion(outputImage)
-    //        }
-    //    }
 }
 

@@ -17,6 +17,7 @@
 		4330B02C2389FB980063447D /* FiltersEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4330B02B2389FB980063447D /* FiltersEffects.swift */; };
 		43485B02238C9D2600877813 /* ImageViewMementoPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43485B01238C9D2600877813 /* ImageViewMementoPattern.swift */; };
 		43485B04238CB5E200877813 /* FiltersEffectsProxyPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43485B03238CB5E200877813 /* FiltersEffectsProxyPattern.swift */; };
+		43485B08238D6C2000877813 /* ButtonsStatePattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43485B07238D6C2000877813 /* ButtonsStatePattern.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		4330B02B2389FB980063447D /* FiltersEffects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersEffects.swift; sourceTree = "<group>"; };
 		43485B01238C9D2600877813 /* ImageViewMementoPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewMementoPattern.swift; sourceTree = "<group>"; };
 		43485B03238CB5E200877813 /* FiltersEffectsProxyPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersEffectsProxyPattern.swift; sourceTree = "<group>"; };
+		43485B07238D6C2000877813 /* ButtonsStatePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonsStatePattern.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 				4330B02B2389FB980063447D /* FiltersEffects.swift */,
 				43485B01238C9D2600877813 /* ImageViewMementoPattern.swift */,
 				43485B03238CB5E200877813 /* FiltersEffectsProxyPattern.swift */,
+				43485B07238D6C2000877813 /* ButtonsStatePattern.swift */,
 				4330B0192389C3930063447D /* Main.storyboard */,
 				4330B01C2389C3950063447D /* Assets.xcassets */,
 				4330B01E2389C3950063447D /* LaunchScreen.storyboard */,
@@ -151,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4330B02C2389FB980063447D /* FiltersEffects.swift in Sources */,
+				43485B08238D6C2000877813 /* ButtonsStatePattern.swift in Sources */,
 				43485B04238CB5E200877813 /* FiltersEffectsProxyPattern.swift in Sources */,
 				4330B02A2389E3910063447D /* FilteredImageCell.swift in Sources */,
 				4330B0282389E2350063447D /* FiltersCollectionHelper.swift in Sources */,

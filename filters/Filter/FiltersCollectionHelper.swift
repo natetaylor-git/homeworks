@@ -9,8 +9,8 @@
 import UIKit
 
 protocol FilterCollectionHelperDelegate: class {
+    var buttonsContext: ButtonsContext? { get }
     func setImageView(with image: UIImage?)
-    func activateButtons()
 }
 
 class FiltersCollectionHelper: NSObject, UICollectionViewDataSource {
@@ -39,8 +39,6 @@ class FiltersCollectionHelper: NSObject, UICollectionViewDataSource {
                 self.filteredImages[index] = nil
             }
         }
-//        self.filters.cancelAllFiltersTasks()
-//        self.filteredImages = [UIImage?].init(repeating: nil, count: self.filters.collection.count)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -91,15 +89,6 @@ extension FiltersCollectionHelper: FiltersEffectsDelegate {
             return
         }
         
-//        for (index, filter) in filters.collection.enumerated() {
-//            self.filters.addFilterOperation(named: filter.name, to: currentImage) {
-//                (filteredImage) in
-//                self.filteredImages[index] = filteredImage
-//                DispatchQueue.main.async {
-//                    collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
-//                }
-//            }
-//        }
         let filtersGroup = DispatchGroup()
         for (index, filter) in filters.collection.enumerated() {
             if index == 0 {
@@ -114,18 +103,9 @@ extension FiltersCollectionHelper: FiltersEffectsDelegate {
                     filtersGroup.leave()
                 }
             }
-            
-            filtersGroup.notify(queue: DispatchQueue.main) {
-                self.delegate?.activateButtons()
-            }
         }
-
-//        guard let currentImage = currentImageView?.image else {
-//            return
-//        }
-//        self.filteredImages = [filters.addPhotoEffectNoir(for: currentImage),
-//                               filters.addComicEffect(for: currentImage),
-//                               filters.addGlassDistortionEffect(for: currentImage),
-//                               filters.addUnSharpEffect(for: currentImage)]
+        filtersGroup.notify(queue: DispatchQueue.main) {
+            self.delegate?.buttonsContext?.setupActivity()
+        }
     }
 }

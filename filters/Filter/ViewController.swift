@@ -56,12 +56,14 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
     
     var creator: ImageViewCreator?
     var careTaker: CareTaker?
+    var buttonsContext: ButtonsContext?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        creator = ImageViewCreator(self.imageView)
-        careTaker = CareTaker(creator: creator!)
+        self.creator = ImageViewCreator(self.imageView)
+        self.careTaker = CareTaker(creator: creator!)
+        self.buttonsContext = ButtonsContext(galleryButton: self.galleryButton, cameraButton: self.cameraButton)
         
         setupUI()
         
@@ -111,7 +113,8 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
         galleryButton.addTarget(self, action: #selector(galleryButtonTapped), for: .touchUpInside)
         galleryButton.setTitle("Gallery", for: .normal)
         galleryButton.setTitleColor(.black, for: .normal)
-        galleryButton.backgroundColor = .white//.groupTableViewBackground
+        galleryButton.backgroundColor = .white
+        galleryButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         galleryButton.layer.borderWidth = 1.0
         galleryButton.layer.borderColor = UIColor.black.cgColor
         self.view.addSubview(galleryButton)
@@ -123,6 +126,7 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
         cameraButton.setTitle("Camera", for: .normal)
         cameraButton.setTitleColor(.black, for: .normal)
         cameraButton.backgroundColor = .white
+        cameraButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         cameraButton.layer.borderWidth = 1.0
         cameraButton.layer.borderColor = UIColor.black.cgColor
         self.view.addSubview(cameraButton)
@@ -142,22 +146,6 @@ class ViewController: UIViewController, FilterCollectionHelperDelegate {
     @objc func cameraButtonTapped() {
         self.filtersCollectionViewHelper.resetFilteredImages()
         self.presentImagePickerController(with: UIImagePickerController.SourceType.camera)
-    }
-    
-    func activateButtons() {
-        self.galleryButton.isEnabled = true
-        self.cameraButton.isEnabled = true
-        UIView.animate(withDuration: 0.5) {
-            self.galleryButton.alpha = 1.0
-            self.cameraButton.alpha = 1.0
-        }
-    }
-    
-    func deactivateButtons() {
-        self.galleryButton.isEnabled = false
-        self.cameraButton.isEnabled = false
-        self.galleryButton.alpha = 0.5
-        self.cameraButton.alpha = 0.5
     }
 }
 
@@ -186,7 +174,7 @@ extension ViewController: UINavigationControllerDelegate, UIImagePickerControlle
         self.filtersCollectionView.reloadData()
         self.showFilters = true
         self.filtersCollectionViewHelper.addFilters(for: self.filtersCollectionView)
-        deactivateButtons()
+        self.buttonsContext?.setupActivity()
         picker.dismiss(animated: false, completion: nil)
     }
 }
