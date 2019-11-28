@@ -179,10 +179,14 @@ extension ViewController: UITableViewDataSource {
             cell.imageView?.image = UIImage(named: "EmptyImage")
             cell.textLabel?.text = ""//"waiting"
             let imagePath = model.path
-            self.interactor.loadImage(at: imagePath) {[weak self] (image) in
+            self.interactor.loadImage(at: imagePath, searchString: model.searchString) {[weak self] (imageModel) in
+                guard imageModel.searchString == self?.searchText else {
+                    return
+                }
+                
                 let index = rowNumber
 
-                guard let cellImage = image else {
+                guard let cellImage = imageModel.image else {
                     cell.textLabel?.text = String(indexPath.row) + " " + "invalid image"
                     return
                 }

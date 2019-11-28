@@ -8,6 +8,11 @@
 
 import UIKit
 
+struct ImageLoadedModel {
+    let image: UIImage?
+    let searchString: String
+}
+
 struct ImageModel {
 	let path: String
 	let description: String
