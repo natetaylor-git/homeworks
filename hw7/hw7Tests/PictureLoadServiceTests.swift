@@ -12,13 +12,15 @@ import XCTest
 class PictureLoadServiceTests: XCTestCase {
     var loadService: PictureLoadServiceProtocol!
     var sessionMock: URLSessionMock!
+    var cacheMock: URLCacheMock!
     var promise: XCTestExpectation!
 
     override func setUp() {
         super.setUp()
         
         sessionMock = URLSessionMock()
-        loadService = PictureLoadService(session: sessionMock)
+        cacheMock = URLCacheMock()
+        loadService = PictureLoadService(session: sessionMock, cache: cacheMock)
     }
 
     override func tearDown() {
@@ -26,11 +28,11 @@ class PictureLoadServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testThatPictureLoadServiceReturnsData() {
+    func testThatDownloadDataReturnsData() {
         // arrange
         promise = expectation(description: "Testing image downloading")
         var testData: Data?
-        let sessionData = Data(base64Encoded: "test")
+        let sessionData = Data(base64Encoded: "testData")
         sessionMock.data = sessionData
         
         // act
@@ -44,15 +46,139 @@ class PictureLoadServiceTests: XCTestCase {
         XCTAssertEqual(testData, sessionData)
     }
     
-    func testExample() {
-    }
-
-    func testPerformanceExample() {
-        self.measure {
-            
+    func testThatDownloadDataReturnsUrlError() {
+        // arrange
+        promise = expectation(description: "Testing image downloading")
+        var testError: CustomError?
+        loadService.urlSource = ""
+        let expectedError = CustomError.noUrl
+        
+        // act
+        loadService.downloadImage { (data, response, error) in
+            testError = error
+            self.promise.fulfill()
         }
+        waitForExpectations(timeout: 5.0, handler: nil)
+        
+        // assert
+        XCTAssertNotNil(testError)
+        XCTAssertEqual(testError?.errorDescription, expectedError.errorDescription)
     }
+    
+    func testThatDownloadDataReturnsNoDataError() {
+        // arrange
+        promise = expectation(description: "Testing image downloading")
+        var testError: CustomError?
+        let expectedError = CustomError.noData(loadService.urlSource)
+        
+        // act
+        loadService.downloadImage { (data, response, error) in
+            testError = error
+            self.promise.fulfill()
+        }
+        waitForExpectations(timeout: 5.0, handler: nil)
+        
+        // assert
+        XCTAssertNotNil(testError)
+        XCTAssertEqual(testError?.errorDescription, expectedError.errorDescription)
+    }
+    
+    func testThatDownloadDataReturnsSessionTaskError() {
+        // arrange
+        promise = expectation(description: "Testing image downloading")
+        var testError: CustomError?
+        let sessionError = NSError(domain: "sessionError", code: 0, userInfo: nil)
+        sessionMock.error = sessionError
+        let expectedError = CustomError.sessionError(sessionError)
+        
+        // act
+        loadService.downloadImage { (data, response, error) in
+            testError = error
+            self.promise.fulfill()
+        }
+        waitForExpectations(timeout: 5.0, handler: nil)
+        
+        // assert
+        XCTAssertNotNil(testError)
+        XCTAssertEqual(testError?.errorDescription, expectedError.errorDescription)
+    }
+    
+    func testThatDownloadImageFromCacheReturnsData() {
+        // arrange
+        promise = expectation(description: "Testing image downloading from cache")
+        var testData: Data?
+        
+        let cachedData = Data(base64Encoded: "testCacheData") ?? {
+            let obj = Data()
+            return obj
+        }()
+        cacheMock.setDataForResponse(data: cachedData)
+        
+        // act
+        loadService.downloadImageFromCache { (data, error) in
+            testData = data
+            self.promise.fulfill()
+        }
+        waitForExpectations(timeout: 5.0, handler: nil)
+        
+        // assert
+        XCTAssertEqual(testData, cachedData)
+    }
+    
+    func testThatDownloadImageFromCacheReturnsUrlError() {
+        // arrange
+        promise = expectation(description: "Testing image downloading from cache")
+        var testError: CustomError?
+        loadService.urlSource = ""
+        let expectedError = CustomError.noUrl
+        
+        // act
+        loadService.downloadImageFromCache { (data, error) in
+            testError = error
+            self.promise.fulfill()
+        }
+        waitForExpectations(timeout: 5.0, handler: nil)
+        
+        // assert
+        XCTAssertNotNil(testError)
+        XCTAssertEqual(testError?.errorDescription, expectedError.errorDescription)
+    }
+    
+    func testThatDownloadImageFromCacheReturnsEmptyCacheError() {
+        // arrange
+        promise = expectation(description: "Testing image downloading")
+        var testError: CustomError?
+        let expectedError = CustomError.emptyCache
+        cacheMock.setResponseToNil()
+        
+        // act
+        loadService.downloadImageFromCache { (data, error) in
+            testError = error
+            self.promise.fulfill()
+        }
+        waitForExpectations(timeout: 5.0, handler: nil)
+        
+        // assert
+        XCTAssertNotNil(testError)
+        XCTAssertEqual(testError?.errorDescription, expectedError.errorDescription)
+    }
+}
 
+class URLCacheMock: URLCache {
+    private var cachedResponse: CachedURLResponse?
+    
+    func setDataForResponse(data: Data) {
+        self.cachedResponse = CachedURLResponse(response: URLResponse(), data: data)
+    }
+    
+    func setResponseToNil() {
+        self.cachedResponse = nil
+    }
+    
+    override func cachedResponse(for request: URLRequest) -> CachedURLResponse? {
+        let cachedURLResponse = cachedResponse
+        return cachedURLResponse
+    }
 }
 
 class URLSessionDataTaskMock: URLSessionDataTask {

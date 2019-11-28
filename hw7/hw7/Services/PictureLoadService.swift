@@ -9,9 +9,9 @@
 import Foundation
 
 protocol PictureLoadServiceProtocol: class {
-    var urlSource: String { get }
-    func downloadImage(completion: @escaping (Data?, URLResponse?, Error?) -> Void)
-    func downloadImageFromCache(completion: @escaping (Data?, Error?) -> Void)
+    var urlSource: String { get set }
+    func downloadImage(completion: @escaping (Data?, URLResponse?, CustomError?) -> Void)
+    func downloadImageFromCache(completion: @escaping (Data?, CustomError?) -> Void)
     func saveToCache(data: Data, response: URLResponse?)
     func cleanCache()
 }
@@ -35,11 +35,7 @@ extension CustomError : LocalizedError {
 }
 
 class PictureLoadService: PictureLoadServiceProtocol {
-    var urlSource: String {
-        get {
-            return "http://icons.iconarchive.com/icons/dtafalonso/ios8/512/Calendar-icon.png"
-        }
-    }
+    var urlSource: String = "http://icons.iconarchive.com/icons/dtafalonso/ios8/512/Calendar-icon.png"
     
     private let session: URLSession
     private let cache: URLCache
@@ -49,7 +45,7 @@ class PictureLoadService: PictureLoadServiceProtocol {
         self.cache = cache
     }
     
-    func downloadImage(completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    func downloadImage(completion: @escaping (Data?, URLResponse?, CustomError?) -> Void) {
         guard let url = URL(string: self.urlSource) else {
             completion(nil, nil, CustomError.noUrl)
             return
@@ -57,12 +53,14 @@ class PictureLoadService: PictureLoadServiceProtocol {
         
         let task = session.dataTask(with: url) { data, response, error in
             if let currentError = error {
-                completion(nil, nil, CustomError.sessionError(currentError))
+                let sessionError = CustomError.sessionError(currentError)
+                completion(nil, nil, sessionError)
                 return
             }
             
             guard let currentData = data else {
-                completion(nil, nil, CustomError.noData(self.urlSource))
+                let dataError = CustomError.noData(self.urlSource)
+                completion(nil, nil, dataError)
                 return
             }
             
@@ -80,13 +78,15 @@ class PictureLoadService: PictureLoadServiceProtocol {
         cache.storeCachedResponse(cachedResponse, for: URLRequest(url: responseURL))
     }
     
-    func downloadImageFromCache(completion: @escaping (Data?, Error?) -> Void) {
+    func downloadImageFromCache(completion: @escaping (Data?, CustomError?) -> Void) {
         guard let url = URL(string: self.urlSource) else {
             return completion(nil, CustomError.noUrl)
         }
         
-        if let cachedResponse = cache.cachedResponse(for: URLRequest(url: url)) {
-            return completion(cachedResponse.data, nil)
+        let request = URLRequest(url: url)
+        if let cachedResponse = cache.cachedResponse(for: request) {
+            let data = cachedResponse.data
+            return completion(data, nil)
         } else {
             return completion(nil, CustomError.emptyCache)
         }

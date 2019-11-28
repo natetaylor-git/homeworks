@@ -17,6 +17,7 @@
 		4334D0712368F42900F712B5 /* PictureInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D0702368F42900F712B5 /* PictureInteractor.swift */; };
 		4334D0762368F62800F712B5 /* PictureLoadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D0752368F62800F712B5 /* PictureLoadService.swift */; };
 		4334D0782369B30400F712B5 /* PictureProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D0772369B30400F712B5 /* PictureProtocols.swift */; };
+		43AFB2F0239000B100F60560 /* PictureLoadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D0752368F62800F712B5 /* PictureLoadService.swift */; };
 		43D64496238C41CB00F541C6 /* PictureLoadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D64495238C41CB00F541C6 /* PictureLoadServiceTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -196,7 +197,6 @@
 					};
 					43D6448A238C411A00F541C6 = {
 						CreatedOnToolsVersion = 10.3;
-						TestTargetID = 4334D0552368853B00F712B5;
 					};
 				};
 			};
@@ -258,6 +258,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43AFB2F0239000B100F60560 /* PictureLoadService.swift in Sources */,
 				43D64496238C41CB00F541C6 /* PictureLoadServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -447,7 +448,6 @@
 		43D64492238C411A00F541C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 52L9N8HD54;
 				INFOPLIST_FILE = hw7Tests/Info.plist;
@@ -460,14 +460,12 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/hw7.app/hw7";
 			};
 			name = Debug;
 		};
 		43D64493238C411A00F541C6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 52L9N8HD54;
 				INFOPLIST_FILE = hw7Tests/Info.plist;
@@ -480,7 +478,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/hw7.app/hw7";
 			};
 			name = Release;
 		};
